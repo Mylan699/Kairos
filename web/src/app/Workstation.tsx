@@ -14,6 +14,7 @@ const DashboardPage = lazy(() => import('@/features/dashboard/DashboardPage'));
 const BlotterPage = lazy(() => import('@/features/blotter/BlotterPage'));
 const PositionsPage = lazy(() => import('@/features/positions/PositionsPage'));
 const MarketsPage = lazy(() => import('@/features/markets/MarketsPage'));
+const RiskPage = lazy(() => import('@/features/risk/RiskPage'));
 
 const ComingSoon = () => <EmptyState title="Écran en cours de construction" />;
 
@@ -31,7 +32,7 @@ export default function Workstation() {
                     <Route path="blotter" element={<Suspense><BlotterPage /></Suspense>} />
                     <Route path="positions" element={<Suspense><PositionsPage /></Suspense>} />
                     <Route path="markets" element={<Suspense><MarketsPage /></Suspense>} />
-                    <Route path="risk" element={<ComingSoon />} />
+                    <Route path="risk" element={<Suspense><RiskPage /></Suspense>} />
                     <Route path="replay" element={<ComingSoon />} />
                   </Route>
                 </Routes>
