@@ -63,6 +63,20 @@ internal sealed class ListedMarketHistory(params MarketSnapshot[] closes) : IMar
         IReadOnlyList<MarketSnapshot> result = closes.Where(close => close.Date < date).TakeLast(count).ToList();
         return Task.FromResult(result);
     }
+
+    public Task<IReadOnlyList<DailyBar>> GetDailyBarsBeforeAsync(Guid instrumentId, DateOnly date, int count, CancellationToken cancellationToken)
+    {
+        IReadOnlyList<DailyBar> result = closes
+            .Where(close => close.Date < date && close.EquityPrices.ContainsKey(instrumentId))
+            .TakeLast(count)
+            .Select(close =>
+            {
+                var price = close.EquityPrices[instrumentId];
+                return new DailyBar(close.Date, price, price, price, price);
+            })
+            .ToList();
+        return Task.FromResult(result);
+    }
 }
 
 internal sealed class FixedActor : ICurrentActor

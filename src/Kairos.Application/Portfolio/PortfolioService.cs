@@ -16,6 +16,8 @@ public sealed class PortfolioService(
     PortfolioCache cache,
     IValidator<TradeRequest> tradeRequestValidator)
 {
+    private const int HistoryDays = 30;
+
     public async Task<IReadOnlyList<PositionDto>> GetPositionsAsync(CancellationToken cancellationToken)
     {
         var market = marketState.Current;
@@ -44,15 +46,21 @@ public sealed class PortfolioService(
 
         var catalog = await referenceData.GetCatalogAsync(cancellationToken);
         var allTrades = await trades.ListAsync(cancellationToken);
-        var previousCloses = await marketHistory.GetClosesBeforeAsync(marketDate, 1, cancellationToken);
+        var previousCloses = await marketHistory.GetClosesBeforeAsync(marketDate, HistoryDays, cancellationToken);
 
-        var baseline = previousCloses.Count == 0
-            ? new Dictionary<PositionKey, decimal>()
-            : PortfolioBuilder.TotalsAt(
-                PortfolioBuilder.BuildPositions(allTrades, catalog, previousCloses[0].Date),
-                previousCloses[0]);
+        var totalsByClose = previousCloses
+            .Select(close => (close.Date, Totals: PortfolioBuilder.TotalsAt(
+                PortfolioBuilder.BuildPositions(allTrades, catalog, close.Date),
+                close)))
+            .ToList();
 
-        var state = new PortfolioState(marketDate, PortfolioBuilder.BuildPositions(allTrades, catalog, marketDate), baseline);
+        var state = new PortfolioState(
+            marketDate,
+            PortfolioBuilder.BuildPositions(allTrades, catalog, marketDate),
+            totalsByClose.Count == 0 ? new Dictionary<PositionKey, decimal>() : totalsByClose[^1].Totals,
+            totalsByClose
+                .Select(item => new PnlHistoryPoint(item.Date, Math.Round(item.Totals.Values.Sum(), 2, MidpointRounding.AwayFromZero)))
+                .ToList());
         cache.Set(state);
 
         return state;

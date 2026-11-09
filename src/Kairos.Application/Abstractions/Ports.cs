@@ -26,6 +26,9 @@ public interface IMarketState
     MarketSnapshot Current { get; }
 }
 
+/// <summary>The open, high, low and close of one day.</summary>
+public sealed record DailyBar(DateOnly Date, decimal Open, decimal High, decimal Low, decimal Close);
+
 /// <summary>Historical end-of-day market data.</summary>
 public interface IMarketHistory
 {
@@ -34,6 +37,9 @@ public interface IMarketHistory
 
     /// <summary>Returns the closes of the market days just before a date, oldest first.</summary>
     Task<IReadOnlyList<MarketSnapshot>> GetClosesBeforeAsync(DateOnly date, int count, CancellationToken cancellationToken);
+
+    /// <summary>Returns the daily bars of an instrument just before a date, oldest first. Empty for a bond.</summary>
+    Task<IReadOnlyList<DailyBar>> GetDailyBarsBeforeAsync(Guid instrumentId, DateOnly date, int count, CancellationToken cancellationToken);
 }
 
 /// <summary>Tells the rest of the application, and connected screens, that a trade changed.</summary>

@@ -26,6 +26,8 @@ public sealed record PositionDto(
 
 public sealed record BookSummaryDto(Guid BookId, string Book, decimal MarketValue, PnlFigures Pnl);
 
+public sealed record PnlHistoryPoint(DateOnly Date, decimal Total);
+
 public sealed record PortfolioSummaryDto(DateOnly MarketDate, IReadOnlyList<BookSummaryDto> Books, PnlFigures Total);
 
 /// <summary>What a trade would change, shown before it is booked.</summary>

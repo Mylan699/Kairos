@@ -24,7 +24,7 @@ public class TradeServiceTests
     [Fact]
     public async Task Booking_drops_the_cached_positions()
     {
-        fixture.Cache.Set(new Kairos.Application.Portfolio.PortfolioState(MarketDate, [], new Dictionary<Kairos.Application.Portfolio.PositionKey, decimal>()));
+        fixture.Cache.Set(new Kairos.Application.Portfolio.PortfolioState(MarketDate, [], new Dictionary<Kairos.Application.Portfolio.PositionKey, decimal>(), []));
 
         await fixture.Service.BookAsync(Request(), none);
 

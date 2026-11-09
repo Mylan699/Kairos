@@ -6,10 +6,12 @@ public readonly record struct PositionKey(Guid BookId, Guid InstrumentId);
 
 /// <summary>The positions of one market date, and the results they closed at the day before.</summary>
 /// <param name="PreviousCloseTotals">Total P&amp;L in euros at the previous close: the baseline of the day P&amp;L.</param>
+/// <param name="History">The total P&amp;L of the desk at each of the last closes, oldest first.</param>
 public sealed record PortfolioState(
     DateOnly Date,
     IReadOnlyList<BookPosition> Positions,
-    IReadOnlyDictionary<PositionKey, decimal> PreviousCloseTotals);
+    IReadOnlyDictionary<PositionKey, decimal> PreviousCloseTotals,
+    IReadOnlyList<PnlHistoryPoint> History);
 
 /// <summary>
 /// Keeps the current positions in memory. They only change when a trade changes or
