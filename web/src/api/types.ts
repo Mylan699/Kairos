@@ -245,6 +245,19 @@ export interface Quote {
   yieldPercent: number | null;
 }
 
+export interface IntradayPoint {
+  minute: number;
+  eurUsd: number;
+  equityBasketPercent: number;
+  tenYearPercent: number;
+  dayPnl: number;
+}
+
+export interface IntradayPrice {
+  minute: number;
+  price: number;
+}
+
 export interface MarketTick {
   status: ReplayStatus;
   quotes: Quote[];

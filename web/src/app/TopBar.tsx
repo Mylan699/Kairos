@@ -122,18 +122,21 @@ export function TopBar({ onShowShortcuts, onOpenPalette }: { onShowShortcuts: ()
         Rechercher
         <span className="ml-auto"><Kbd>Ctrl K</Kbd></span>
       </button>
-      <Button variant="primary" className="hidden md:inline-flex" onClick={() => openTicket({ side: 'Buy' })}>
-        Nouveau trade
-      </Button>
+      {/* Wrapped because the button sets its own display, which would override `hidden`. */}
+      <span className="hidden md:inline-flex">
+        <Button variant="primary" onClick={() => openTicket({ side: 'Buy' })}>Nouveau trade</Button>
+      </span>
       <IconButton
         label={theme === 'dark' ? 'Passer au thème clair' : 'Passer au thème sombre'}
         onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       >
         {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
       </IconButton>
-      <IconButton label="Raccourcis clavier" className="hidden md:inline-grid" onClick={onShowShortcuts}>
-        <KeyboardIcon />
-      </IconButton>
+      <span className="hidden md:inline-flex">
+        <IconButton label="Raccourcis clavier" onClick={onShowShortcuts}>
+          <KeyboardIcon />
+        </IconButton>
+      </span>
     </header>
   );
 }

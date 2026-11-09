@@ -18,6 +18,7 @@ const reference: ReferenceData = {
 const tick = {
   status: { date: '2020-03-16' },
   quotes: [{ instrumentId: 'msft', symbol: 'MSFT', assetClass: 'Equity', bid: 150.1, ask: 150.3, last: 150.2, changePercent: 1, yieldPercent: null }],
+  curve: { points: [] },
   summary: { books: [], total: {} },
 } as unknown as MarketTick;
 

@@ -1,6 +1,7 @@
 export { KairosLogo } from './brand/KairosLogo';
 export { KairosMark } from './brand/KairosMark';
 export { Button, IconButton } from './components/Button';
+export { BarList, type BarItem } from './components/BarList';
 export { Badge, EmptyState, ErrorState, Kbd, Panel, Skeleton } from './components/Display';
 export { CONTROL_CLASSES, FieldShell, TextField } from './components/Field';
 export * from './components/Icons';
@@ -9,6 +10,7 @@ export { Drawer, Modal } from './components/Overlays';
 export { SegmentedControl } from './components/SegmentedControl';
 export { Select, type SelectOption } from './components/Select';
 export { Sparkline } from './components/Sparkline';
+export { StaggerGroup, StaggerItem } from './components/Stagger';
 export { ToastProvider, useToast } from './components/Toast';
 export { cx } from './cx';
 export { duration, ease, spring } from './motion';

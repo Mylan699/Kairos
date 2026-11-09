@@ -8,6 +8,7 @@ import { ToastProvider } from '@/design-system';
 import { LiveProvider } from '@/realtime/live';
 import { LiveStore, type HubLike } from '@/realtime/LiveStore';
 
+/** A hub for tests of screens that follow the feed. */
 export class TestHub implements HubLike {
   private handlers = new Map<string, (payload: unknown) => void>();
   private reconnecting = () => undefined as void;

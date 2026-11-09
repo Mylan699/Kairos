@@ -1,4 +1,4 @@
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { useState, type PointerEvent } from 'react';
 import { duration, ease } from '../motion';
 
@@ -30,6 +30,7 @@ export function buildPoints(values: readonly number[], width: number, height: nu
 /** A trend on one line. Like the logo, it ends on a dot: the last tick. */
 export function Sparkline({ values, label, formatPoint, width = 120, height = 32 }: SparklineProps) {
   const [hoverIndex, setHoverIndex] = useState<number | null>(null);
+  const reducedMotion = useReducedMotion();
 
   if (values.length === 0) {
     return <div style={{ width, height }} />;
@@ -64,7 +65,7 @@ export function Sparkline({ values, label, formatPoint, width = 120, height = 32
           strokeWidth={1.5}
           strokeLinecap="round"
           strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
+          initial={reducedMotion ? false : { pathLength: 0 }}
           animate={{ pathLength: 1 }}
           transition={{ duration: duration.draw, ease: ease.standard }}
         />

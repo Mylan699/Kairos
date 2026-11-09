@@ -1,5 +1,6 @@
 import { QueryClientProvider } from '@tanstack/react-query';
 import { MotionConfig } from 'motion/react';
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 import { EmptyState, ToastProvider } from '@/design-system';
 import { TradeTicketProvider } from '@/features/trade-ticket/TicketContext';
@@ -8,6 +9,8 @@ import { LiveProvider } from '@/realtime/live';
 import { getLiveStore } from '@/realtime/sharedStore';
 import { AppLayout } from './AppLayout';
 import { BookFilterProvider } from './BookFilter';
+
+const DashboardPage = lazy(() => import('@/features/dashboard/DashboardPage'));
 
 const ComingSoon = () => <EmptyState title="Écran en cours de construction" />;
 
@@ -21,7 +24,7 @@ export default function Workstation() {
               <TradeTicketProvider>
                 <Routes>
                   <Route element={<AppLayout />}>
-                    <Route index element={<ComingSoon />} />
+                    <Route index element={<Suspense><DashboardPage /></Suspense>} />
                     <Route path="blotter" element={<ComingSoon />} />
                     <Route path="positions" element={<ComingSoon />} />
                     <Route path="markets" element={<ComingSoon />} />

@@ -1,5 +1,5 @@
 import type { QueryClient } from '@tanstack/react-query';
-import type { MarketTick, Position, RiskReport, Trade } from '@/api/types';
+import type { IntradayPoint, MarketTick, Position, RiskReport, Trade } from '@/api/types';
 
 export type ConnectionStatus = 'connecting' | 'connected' | 'reconnecting' | 'disconnected';
 export type LiveTopic = 'positions' | 'risk';
@@ -9,6 +9,8 @@ export interface LiveState {
   tick: MarketTick | null;
   positions: Position[] | null;
   risk: RiskReport | null;
+  /** The points received from the feed since this page opened or the day last restarted. */
+  intradayTail: IntradayPoint[];
 }
 
 /** The part of a SignalR connection this store relies on, so that tests can provide a fake one. */
@@ -23,12 +25,27 @@ export interface HubLike {
 
 const START_RETRY_MILLISECONDS = 3_000;
 
+const TEN_YEARS_IN_MONTHS = 120;
+
+function toIntradayPoint(tick: MarketTick): IntradayPoint {
+  const equities = tick.quotes.filter((quote) => quote.assetClass === 'Equity');
+  const basket = equities.reduce((total, quote) => total + quote.changePercent, 0) / (equities.length || 1);
+
+  return {
+    minute: tick.status.minute,
+    eurUsd: tick.quotes.find((quote) => quote.assetClass === 'Fx')?.last ?? 0,
+    equityBasketPercent: basket,
+    tenYearPercent: tick.curve.points.find((point) => point.months === TEN_YEARS_IN_MONTHS)?.yieldPercent ?? 0,
+    dayPnl: tick.summary.total.day,
+  };
+}
+
 /**
  * Holds what the server pushes and tells React when it changes. It lives outside React,
  * so that there is one connection whichever screens are displayed.
  */
 export class LiveStore {
-  private state: LiveState = { status: 'connecting', tick: null, positions: null, risk: null };
+  private state: LiveState = { status: 'connecting', tick: null, positions: null, risk: null, intradayTail: [] };
   private started = false;
   private readonly listeners = new Set<() => void>();
   private readonly tradeListeners = new Set<(trade: Trade) => void>();
@@ -119,13 +136,28 @@ export class LiveStore {
   }
 
   private receiveTick(tick: MarketTick): void {
-    const previousDate = this.state.tick?.status.date;
-    this.update({ tick });
+    const previous = this.state.tick?.status;
+    const point = toIntradayPoint(tick);
+    const dateChanged = previous !== undefined && previous.date !== tick.status.date;
+    const wentBack = previous !== undefined && !dateChanged && tick.status.minute < previous.minute;
+
+    this.update({ tick, intradayTail: this.nextTail(point, dateChanged || wentBack) });
 
     // Another date is another market: everything fetched for the old one is out of date.
-    if (previousDate && previousDate !== tick.status.date) {
+    if (dateChanged) {
       void this.queryClient.invalidateQueries();
+    } else if (wentBack) {
+      void this.queryClient.invalidateQueries({ queryKey: ['intraday'] });
     }
+  }
+
+  private nextTail(point: IntradayPoint, restart: boolean): IntradayPoint[] {
+    if (restart) {
+      return [point];
+    }
+
+    const tail = this.state.intradayTail;
+    return tail[tail.length - 1]?.minute === point.minute ? tail : [...tail, point];
   }
 
   private receiveTrade(trade: Trade): void {

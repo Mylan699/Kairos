@@ -35,7 +35,13 @@ class FakeHub implements HubLike {
   close = () => this.closed();
 }
 
-const tick = (date: string) => ({ status: { date } }) as MarketTick;
+const tick = (date: string, minute = 0) =>
+  ({
+    status: { date, minute },
+    quotes: [],
+    curve: { points: [] },
+    summary: { total: { day: 0 } },
+  }) as unknown as MarketTick;
 const flush = () => new Promise((resolve) => setTimeout(resolve));
 
 describe('LiveStore', () => {
@@ -89,6 +95,28 @@ describe('LiveStore', () => {
 
     hub.emit('tick', tick('2020-03-16'));
     expect(queryClient.invalidateQueries).toHaveBeenCalledOnce();
+  });
+
+  it('adds one point per minute to the intraday tail', async () => {
+    store.start();
+    await flush();
+
+    hub.emit('tick', tick('2016-06-24', 10));
+    hub.emit('tick', tick('2016-06-24', 10));
+    hub.emit('tick', tick('2016-06-24', 11));
+
+    expect(store.getState().intradayTail.map((point) => point.minute)).toEqual([10, 11]);
+  });
+
+  it('restarts the intraday history when the replay jumps back', async () => {
+    store.start();
+    await flush();
+
+    hub.emit('tick', tick('2016-06-24', 100));
+    hub.emit('tick', tick('2016-06-24', 50));
+
+    expect(store.getState().intradayTail.map((point) => point.minute)).toEqual([50]);
+    expect(queryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ['intraday'] });
   });
 
   it('reports an outage, then refetches after reconnecting', async () => {
