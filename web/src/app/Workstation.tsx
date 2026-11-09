@@ -2,7 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { MotionConfig } from 'motion/react';
 import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import { EmptyState, ToastProvider } from '@/design-system';
+import { ToastProvider } from '@/design-system';
 import { TradeTicketProvider } from '@/features/trade-ticket/TicketContext';
 import { queryClient } from '@/lib/queryClient';
 import { LiveProvider } from '@/realtime/live';
@@ -15,8 +15,7 @@ const BlotterPage = lazy(() => import('@/features/blotter/BlotterPage'));
 const PositionsPage = lazy(() => import('@/features/positions/PositionsPage'));
 const MarketsPage = lazy(() => import('@/features/markets/MarketsPage'));
 const RiskPage = lazy(() => import('@/features/risk/RiskPage'));
-
-const ComingSoon = () => <EmptyState title="Écran en cours de construction" />;
+const ReplayPage = lazy(() => import('@/features/replay/ReplayPage'));
 
 export default function Workstation() {
   return (
@@ -33,7 +32,7 @@ export default function Workstation() {
                     <Route path="positions" element={<Suspense><PositionsPage /></Suspense>} />
                     <Route path="markets" element={<Suspense><MarketsPage /></Suspense>} />
                     <Route path="risk" element={<Suspense><RiskPage /></Suspense>} />
-                    <Route path="replay" element={<ComingSoon />} />
+                    <Route path="replay" element={<Suspense><ReplayPage /></Suspense>} />
                   </Route>
                 </Routes>
               </TradeTicketProvider>
