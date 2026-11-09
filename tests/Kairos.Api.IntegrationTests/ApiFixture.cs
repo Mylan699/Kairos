@@ -12,6 +12,9 @@ namespace Kairos.Api.IntegrationTests;
 /// </summary>
 public sealed class ApiFixture : IAsyncLifetime
 {
+    public const string AllowedOrigin = "https://kairos.example";
+    public const string GenerousLimit = "1000000";
+
     public static readonly DateOnly FirstDay = new(2016, 6, 20);
     public static readonly DateOnly SecondDay = new(2016, 6, 21);
     public static readonly DateOnly ThirdDay = new(2016, 6, 22);
@@ -40,6 +43,9 @@ public sealed class ApiFixture : IAsyncLifetime
         Environment.SetEnvironmentVariable("Replay__DefaultDate", ThirdDay.ToString("yyyy-MM-dd"));
         Environment.SetEnvironmentVariable("Replay__TickMilliseconds", "50");
         Environment.SetEnvironmentVariable("Replay__IdleResetMinutes", "0");
+        Environment.SetEnvironmentVariable("RateLimiting__ReadPermitsPerMinute", GenerousLimit);
+        Environment.SetEnvironmentVariable("RateLimiting__WritePermitsPerMinute", GenerousLimit);
+        Environment.SetEnvironmentVariable("Cors__AllowedOrigins__0", AllowedOrigin);
 
         Factory = new WebApplicationFactory<Program>();
         Client = Factory.CreateClient();
