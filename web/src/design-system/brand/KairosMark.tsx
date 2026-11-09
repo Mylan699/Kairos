@@ -25,6 +25,7 @@ interface KairosMarkProps {
   /** Draws the whole symbol in the current text colour. */
   mono?: boolean;
   className?: string;
+  /** What screen readers announce. Empty when text next to the symbol already says it. */
   title?: string;
 }
 
@@ -50,8 +51,7 @@ export function KairosMark({
       viewBox={MARK_GEOMETRY.viewBox}
       width={size}
       height={size}
-      role="img"
-      aria-label={title}
+      {...(title ? { role: 'img', 'aria-label': title } : { 'aria-hidden': true })}
       className={className}
     >
       <rect {...MARK_GEOMETRY.stem} fill={inkColor} />
