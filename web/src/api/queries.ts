@@ -7,6 +7,7 @@ import type {
   Dashboard,
   HistoricalScenario,
   IntradayPoint,
+  IntradayPrice,
   Position,
   ReferenceData,
   RemarkableDay,
@@ -94,6 +95,13 @@ export const useCurve = (date: string | null) =>
     queryKey: queryKeys.curve(date),
     queryFn: ({ signal }) => apiGet<Curve>(`/api/market/curve${date ? `?date=${date}` : ''}`, signal),
     enabled: date !== null,
+  });
+
+export const useIntradayPrices = (instrumentId: string, date: string) =>
+  useQuery({
+    queryKey: ['intraday', date, instrumentId],
+    queryFn: ({ signal }) => apiGet<IntradayPrice[]>(`/api/replay/intraday/${instrumentId}`, signal),
+    staleTime: NEVER_STALE,
   });
 
 /** The day so far: what the server rebuilds when the screen opens, then what the feed adds. */

@@ -13,6 +13,7 @@ import { BookFilterProvider } from './BookFilter';
 const DashboardPage = lazy(() => import('@/features/dashboard/DashboardPage'));
 const BlotterPage = lazy(() => import('@/features/blotter/BlotterPage'));
 const PositionsPage = lazy(() => import('@/features/positions/PositionsPage'));
+const MarketsPage = lazy(() => import('@/features/markets/MarketsPage'));
 
 const ComingSoon = () => <EmptyState title="Écran en cours de construction" />;
 
@@ -29,7 +30,7 @@ export default function Workstation() {
                     <Route index element={<Suspense><DashboardPage /></Suspense>} />
                     <Route path="blotter" element={<Suspense><BlotterPage /></Suspense>} />
                     <Route path="positions" element={<Suspense><PositionsPage /></Suspense>} />
-                    <Route path="markets" element={<ComingSoon />} />
+                    <Route path="markets" element={<Suspense><MarketsPage /></Suspense>} />
                     <Route path="risk" element={<ComingSoon />} />
                     <Route path="replay" element={<ComingSoon />} />
                   </Route>
