@@ -55,3 +55,9 @@ Format court : contexte, décision, conséquences.
 - **Contexte** : un stress peut s'estimer à partir des sensibilités (delta multiplié par le choc), ou en revalorisant chaque position dans le marché choqué.
 - **Décision** : revaloriser chaque position. Un scénario paramétrable applique le même choc partout, un scénario historique applique les variations réellement observées entre deux dates, valeur par valeur et maturité par maturité. Les deltas action et change sont des stress de +1 %, le DV01 est analytique.
 - **Conséquences** : la convexité obligataire et le cumul des chocs actions et change sont pris en compte. Le coût de calcul reste faible avec quelques centaines de positions.
+
+## ADR-010 : émettre plusieurs générations d'obligations par maturité
+
+- **Contexte** : le brief prévoit quatre obligations (2, 5, 10 et 30 ans), mais une obligation à 2 ans ne peut pas vivre sur une période de dix ans.
+- **Décision** : chaque maturité est réémise à l'échéance de la précédente, à partir du 4 janvier 2010, avec un coupon égal au taux de la courbe le jour d'émission. On obtient 6 émissions à 2 ans, 3 à 5 ans, 2 à 10 ans et une à 30 ans.
+- **Conséquences** : quatre lignes restent négociables à toute date. Les émissions échues restent dans le référentiel et sont remboursées au pair.

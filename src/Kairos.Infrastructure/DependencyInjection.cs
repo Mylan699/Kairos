@@ -1,5 +1,7 @@
 using Kairos.Application.Abstractions;
+using Kairos.Infrastructure.Import;
 using Kairos.Infrastructure.Persistence;
+using Kairos.Infrastructure.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +23,16 @@ public static class DependencyInjection
         services.AddScoped<IMarketHistory, MarketHistoryRepository>();
         services.AddSingleton<IReferenceDataProvider, ReferenceDataProvider>();
 
+        services.AddScoped<MarketDataImporter>();
+        services.AddScoped<ReferenceSeeder>();
+        services.AddScoped<DatabaseInitializer>();
+
         return services;
+    }
+
+    public static async Task InitializeDatabaseAsync(this IServiceProvider services, CancellationToken cancellationToken)
+    {
+        await using var scope = services.CreateAsyncScope();
+        await scope.ServiceProvider.GetRequiredService<DatabaseInitializer>().InitializeAsync(cancellationToken);
     }
 }
