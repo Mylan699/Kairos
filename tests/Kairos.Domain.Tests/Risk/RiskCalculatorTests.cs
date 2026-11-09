@@ -1,4 +1,5 @@
 using Kairos.Domain.Common;
+using Kairos.Domain.Instruments;
 using Kairos.Domain.Risk;
 using Kairos.Domain.ValueObjects;
 using static Kairos.Domain.Tests.Risk.RiskFixture;
@@ -98,7 +99,7 @@ public class RiskCalculatorTests
     [Fact]
     public void An_equity_with_no_market_price_is_reported_clearly()
     {
-        var unknown = Instruments.Instrument.Equity(Guid.NewGuid(), "ZZZ", "Energy");
+        var unknown = Instrument.Equity(Guid.NewGuid(), "ZZZ", "Energy");
 
         Assert.Throws<DomainException>(() =>
             RiskCalculator.Exposures([Held(BookA, unknown, Side.Buy, 1m, 1m)], SampleMarket()));

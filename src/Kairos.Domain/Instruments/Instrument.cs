@@ -27,6 +27,10 @@ public sealed class Instrument
     /// <summary>The terms of a bond. Null for the other asset classes.</summary>
     public TreasuryBond? Bond { get; }
 
+    /// <summary>A bond can only trade between its issue date and its maturity.</summary>
+    public bool IsTradableOn(DateOnly date) =>
+        Bond is null || (date >= Bond.IssueDate && date < Bond.MaturityDate);
+
     public static Instrument Equity(Guid id, string ticker, string sector) =>
         new(id, ticker, AssetClass.Equity, sector, bond: null);
 

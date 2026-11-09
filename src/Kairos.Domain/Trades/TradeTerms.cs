@@ -1,4 +1,5 @@
 using Kairos.Domain.Common;
+using Kairos.Domain.Positions;
 using Kairos.Domain.ValueObjects;
 
 namespace Kairos.Domain.Trades;
@@ -15,7 +16,8 @@ public sealed record TradeTerms
         Guid bookId,
         Guid traderId,
         DateOnly tradeDate,
-        DateOnly valueDate)
+        DateOnly valueDate,
+        decimal usdPerEurAtTrade)
     {
         if (quantity <= 0m)
         {
@@ -37,6 +39,11 @@ public sealed record TradeTerms
             throw new DomainException("The value date cannot fall on a weekend.");
         }
 
+        if (usdPerEurAtTrade <= 0m)
+        {
+            throw new DomainException("The EUR/USD rate of a trade must be strictly positive.");
+        }
+
         InstrumentId = instrumentId;
         Side = side;
         Quantity = quantity;
@@ -46,6 +53,7 @@ public sealed record TradeTerms
         TraderId = traderId;
         TradeDate = tradeDate;
         ValueDate = valueDate;
+        UsdPerEurAtTrade = usdPerEurAtTrade;
     }
 
     public Guid InstrumentId { get; }
@@ -65,6 +73,11 @@ public sealed record TradeTerms
     public DateOnly TradeDate { get; }
 
     public DateOnly ValueDate { get; }
+
+    /// <summary>The EUR/USD rate when the trade was done: the basis of its euro cost.</summary>
+    public decimal UsdPerEurAtTrade { get; }
+
+    public Fill ToFill() => new(Side, Quantity, Price, UsdPerEurAtTrade);
 
     /// <summary>Lists what differs from a previous version, for the audit trail.</summary>
     public string DescribeChangesFrom(TradeTerms previous)
@@ -88,6 +101,7 @@ public sealed record TradeTerms
         Compare(nameof(TraderId), previous.TraderId, TraderId);
         Compare(nameof(TradeDate), previous.TradeDate, TradeDate);
         Compare(nameof(ValueDate), previous.ValueDate, ValueDate);
+        Compare(nameof(UsdPerEurAtTrade), previous.UsdPerEurAtTrade, UsdPerEurAtTrade);
 
         return string.Join("; ", changes);
     }

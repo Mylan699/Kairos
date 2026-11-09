@@ -7,6 +7,7 @@ namespace Kairos.Domain.Tests.Trades;
 public class TradeTests
 {
     private const string Actor = "m.durand";
+    private const decimal Rate = 1.13m;
 
     private static readonly DateTimeOffset BookedAt = new(2016, 6, 20, 14, 30, 0, TimeSpan.Zero);
     private static readonly DateTimeOffset Later = BookedAt.AddMinutes(5);
@@ -24,7 +25,8 @@ public class TradeTests
         BookId,
         Trader,
         new DateOnly(2016, 6, 20),
-        new DateOnly(2016, 6, 22));
+        new DateOnly(2016, 6, 22),
+        Rate);
 
     private static Trade NewTrade() => Trade.Book(Guid.NewGuid(), Terms(), Actor, BookedAt);
 
@@ -189,7 +191,7 @@ public class TradeTests
     {
         Assert.Throws<DomainException>(() => new TradeTerms(
             Instrument, Side.Buy, 1m, 1m, Counterparty, BookId, Trader,
-            new DateOnly(2016, 6, 22), new DateOnly(2016, 6, 21)));
+            new DateOnly(2016, 6, 22), new DateOnly(2016, 6, 21), Rate));
     }
 
     [Fact]
@@ -197,6 +199,22 @@ public class TradeTests
     {
         Assert.Throws<DomainException>(() => new TradeTerms(
             Instrument, Side.Buy, 1m, 1m, Counterparty, BookId, Trader,
-            new DateOnly(2016, 6, 24), new DateOnly(2016, 6, 25)));
+            new DateOnly(2016, 6, 24), new DateOnly(2016, 6, 25), Rate));
+    }
+
+    [Fact]
+    public void A_non_positive_rate_is_rejected()
+    {
+        Assert.Throws<DomainException>(() => new TradeTerms(
+            Instrument, Side.Buy, 1m, 1m, Counterparty, BookId, Trader,
+            new DateOnly(2016, 6, 20), new DateOnly(2016, 6, 22), 0m));
+    }
+
+    [Fact]
+    public void Terms_convert_to_the_fill_seen_by_positions()
+    {
+        var fill = Terms(quantity: 10m, price: 20m).ToFill();
+
+        Assert.Equal(new Kairos.Domain.Positions.Fill(Side.Buy, 10m, 20m, Rate), fill);
     }
 }

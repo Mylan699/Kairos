@@ -1,8 +1,10 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Kairos.Application/Kairos.Application.csproj" />
     <Project Path="src/Kairos.Domain/Kairos.Domain.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Kairos.Application.Tests/Kairos.Application.Tests.csproj" />
     <Project Path="tests/Kairos.Domain.Tests/Kairos.Domain.Tests.csproj" />
   </Folder>
 </Solution>
