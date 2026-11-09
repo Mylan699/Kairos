@@ -61,3 +61,9 @@ Format court : contexte, décision, conséquences.
 - **Contexte** : le brief prévoit quatre obligations (2, 5, 10 et 30 ans), mais une obligation à 2 ans ne peut pas vivre sur une période de dix ans.
 - **Décision** : chaque maturité est réémise à l'échéance de la précédente, à partir du 4 janvier 2010, avec un coupon égal au taux de la courbe le jour d'émission. On obtient 6 émissions à 2 ans, 3 à 5 ans, 2 à 10 ans et une à 30 ans.
 - **Conséquences** : quatre lignes restent négociables à toute date. Les émissions échues restent dans le référentiel et sont remboursées au pair.
+
+## ADR-011 : partager un seul rejeu entre tous les visiteurs
+
+- **Contexte** : la démo publique n'a pas d'authentification. Un rejeu par visiteur demanderait de garder une simulation complète en mémoire pour chacun d'eux, sur une petite instance.
+- **Décision** : un seul rejeu tourne côté serveur, comme un marché commun. Les commandes sont ouvertes et limitées en débit. Après 20 minutes sans commande, le rejeu revient seul à la journée par défaut. Les trades sont partagés de la même façon et remis à zéro chaque nuit.
+- **Conséquences** : le coût serveur ne dépend pas du nombre de visiteurs. Deux visiteurs simultanés peuvent se gêner, ce qui est acceptable pour une démonstration.

@@ -1,6 +1,8 @@
 using Kairos.Application.Abstractions;
+using Kairos.Application.Replay;
 using Kairos.Infrastructure.Import;
 using Kairos.Infrastructure.Persistence;
+using Kairos.Infrastructure.Replay;
 using Kairos.Infrastructure.Seeding;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +29,15 @@ public static class DependencyInjection
         services.AddScoped<ReferenceSeeder>();
         services.AddScoped<TradeSeeder>();
         services.AddScoped<DatabaseInitializer>();
+
+        services.Configure<ReplayOptions>(configuration.GetSection(ReplayOptions.SectionName));
+        services.AddScoped<ReplayDayLoader>();
+        services.AddSingleton<LiveMarketState>();
+        services.AddSingleton<IMarketState>(provider => provider.GetRequiredService<LiveMarketState>());
+        services.AddSingleton<ReplayEngine>();
+        services.AddSingleton<IReplayControl>(provider => provider.GetRequiredService<ReplayEngine>());
+        services.AddHostedService(provider => provider.GetRequiredService<ReplayEngine>());
+        services.AddHostedService<NightlyResetService>();
 
         return services;
     }

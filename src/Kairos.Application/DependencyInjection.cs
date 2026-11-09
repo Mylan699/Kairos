@@ -1,6 +1,7 @@
 using FluentValidation;
 using Kairos.Application.Market;
 using Kairos.Application.Portfolio;
+using Kairos.Application.Replay;
 using Kairos.Application.Risk;
 using Kairos.Application.Trades;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,6 +20,7 @@ public static class DependencyInjection
         services.AddScoped<RiskService>();
         services.AddScoped<DashboardService>();
         services.AddScoped<MarketService>();
+        services.AddScoped<ReplayService>();
 
         return services;
     }
