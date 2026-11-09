@@ -128,6 +128,28 @@
   }
 }
 
+/* A trade that has just changed slides into the blotter and stays highlighted for a moment. */
+.kairos-row-new {
+  animation: kairos-row-highlight var(--motion-highlight) var(--motion-ease-standard);
+}
+
+.kairos-row-new .ag-cell {
+  animation: kairos-row-slide var(--motion-slow) var(--motion-ease-standard);
+}
+
+@keyframes kairos-row-highlight {
+  from {
+    background-color: var(--kairos-accent-soft);
+  }
+}
+
+@keyframes kairos-row-slide {
+  from {
+    opacity: 0;
+    transform: translateX(-12px);
+  }
+}
+
 /* The last tick of the logo breathes while the live feed is connected. */
 .kairos-pulse {
   animation: kairos-pulse 2s var(--motion-ease-standard) infinite;

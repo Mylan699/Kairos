@@ -53,7 +53,7 @@ export class LiveStore {
 
   constructor(
     private readonly connection: HubLike,
-    private readonly queryClient: Pick<QueryClient, 'invalidateQueries'>,
+    private readonly queryClient: Pick<QueryClient, 'invalidateQueries' | 'setQueryData'>,
   ) {}
 
   getState = (): LiveState => this.state;
@@ -162,7 +162,12 @@ export class LiveStore {
 
   private receiveTrade(trade: Trade): void {
     this.tradeListeners.forEach((listener) => listener(trade));
-    void this.queryClient.invalidateQueries({ queryKey: ['trades'] });
+
+    // The blotter holds thousands of rows: updating one is enough, without fetching them again.
+    this.queryClient.setQueryData<Trade[]>(['trades'], (trades) =>
+      trades && [...trades.filter((item) => item.id !== trade.id), trade],
+    );
+    void this.queryClient.invalidateQueries({ queryKey: ['trades', trade.id] });
     void this.queryClient.invalidateQueries({ queryKey: ['portfolio'] });
     void this.queryClient.invalidateQueries({ queryKey: ['risk'] });
   }

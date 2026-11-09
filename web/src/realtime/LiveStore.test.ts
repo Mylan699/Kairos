@@ -46,12 +46,12 @@ const flush = () => new Promise((resolve) => setTimeout(resolve));
 
 describe('LiveStore', () => {
   let hub: FakeHub;
-  let queryClient: { invalidateQueries: ReturnType<typeof vi.fn> };
+  let queryClient: { invalidateQueries: ReturnType<typeof vi.fn>; setQueryData: ReturnType<typeof vi.fn> };
   let store: LiveStore;
 
   beforeEach(() => {
     hub = new FakeHub();
-    queryClient = { invalidateQueries: vi.fn() };
+    queryClient = { invalidateQueries: vi.fn(), setQueryData: vi.fn() };
     store = new LiveStore(hub, queryClient as never);
   });
 
@@ -201,7 +201,10 @@ describe('LiveStore', () => {
     hub.emit('tradeChanged', trade);
 
     expect(listener).toHaveBeenCalledWith(trade);
-    expect(queryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ['trades'] });
+    const update = queryClient.setQueryData.mock.calls[0]?.[1] as (trades?: Trade[]) => Trade[] | undefined;
+    expect(update([{ id: 't0' } as Trade, { id: 't1', version: 1 } as Trade])).toEqual([{ id: 't0' }, trade]);
+    expect(update(undefined)).toBeUndefined();
+    expect(queryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ['trades', 't1'] });
     expect(queryClient.invalidateQueries).toHaveBeenCalledWith({ queryKey: ['portfolio'] });
   });
 

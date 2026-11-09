@@ -11,6 +11,7 @@ import { AppLayout } from './AppLayout';
 import { BookFilterProvider } from './BookFilter';
 
 const DashboardPage = lazy(() => import('@/features/dashboard/DashboardPage'));
+const BlotterPage = lazy(() => import('@/features/blotter/BlotterPage'));
 
 const ComingSoon = () => <EmptyState title="Écran en cours de construction" />;
 
@@ -25,7 +26,7 @@ export default function Workstation() {
                 <Routes>
                   <Route element={<AppLayout />}>
                     <Route index element={<Suspense><DashboardPage /></Suspense>} />
-                    <Route path="blotter" element={<ComingSoon />} />
+                    <Route path="blotter" element={<Suspense><BlotterPage /></Suspense>} />
                     <Route path="positions" element={<ComingSoon />} />
                     <Route path="markets" element={<ComingSoon />} />
                     <Route path="risk" element={<ComingSoon />} />
