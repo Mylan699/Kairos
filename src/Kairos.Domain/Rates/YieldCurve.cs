@@ -1,4 +1,5 @@
 using Kairos.Domain.Common;
+using Kairos.Domain.ValueObjects;
 
 namespace Kairos.Domain.Rates;
 
@@ -53,9 +54,12 @@ public sealed class YieldCurve
     }
 
     /// <summary>Moves every point of the curve by the same number of basis points.</summary>
-    public YieldCurve ShiftedBy(decimal basisPoints)
-    {
-        var shift = basisPoints / BasisPointsPerUnit;
-        return new YieldCurve(Points.Select(point => point with { Yield = point.Yield + shift }));
-    }
+    public YieldCurve ShiftedBy(decimal basisPoints) => ShiftedBy(_ => basisPoints);
+
+    /// <summary>Moves each point of the curve by the basis points given for its maturity.</summary>
+    public YieldCurve ShiftedBy(Func<Tenor, decimal> basisPointsForTenor) =>
+        new(Points.Select(point => point with
+        {
+            Yield = point.Yield + basisPointsForTenor(point.Tenor) / BasisPointsPerUnit,
+        }));
 }

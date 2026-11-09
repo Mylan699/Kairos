@@ -49,3 +49,9 @@ Format court : contexte, décision, conséquences.
 - **Contexte** : le P&L doit être consolidé en euros alors que tous les instruments sont cotés en dollars, avec une décomposition entre effet prix et effet change.
 - **Décision** : coût moyen pondéré, suivi à la fois en dollars et en euros au taux de chaque achat. L'effet prix est le mouvement de prix converti au taux du jour, l'effet change est le mouvement du taux sur le capital investi : leur somme est exactement le P&L en euros. Une position EUR/USD est financée en dollars et n'a donc pas d'effet change sur capital. Les obligations sont suivies au prix clean.
 - **Conséquences** : la décomposition n'a pas de résidu inexpliqué. Le portefeuille est supposé non couvert. Les coupons encaissés et le portage ne sont pas intégrés au P&L, ce qui est une simplification assumée.
+
+## ADR-009 : calculer les stress tests par revalorisation complète
+
+- **Contexte** : un stress peut s'estimer à partir des sensibilités (delta multiplié par le choc), ou en revalorisant chaque position dans le marché choqué.
+- **Décision** : revaloriser chaque position. Un scénario paramétrable applique le même choc partout, un scénario historique applique les variations réellement observées entre deux dates, valeur par valeur et maturité par maturité. Les deltas action et change sont des stress de +1 %, le DV01 est analytique.
+- **Conséquences** : la convexité obligataire et le cumul des chocs actions et change sont pris en compte. Le coût de calcul reste faible avec quelques centaines de positions.
