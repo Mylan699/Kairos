@@ -112,6 +112,24 @@
   }
 }
 
+/* A loading skeleton: the light passes over it, it does not spin. */
+.kairos-skeleton {
+  background-image: linear-gradient(90deg, transparent, var(--kairos-surface-4), transparent);
+  background-repeat: no-repeat;
+  background-size: 200% 100%;
+  animation: kairos-shimmer 1.4s linear infinite;
+}
+
+@keyframes kairos-shimmer {
+  from {
+    background-position: 200% 0;
+  }
+
+  to {
+    background-position: -200% 0;
+  }
+}
+
 /* The last tick of the logo breathes while the live feed is connected. */
 .kairos-pulse {
   animation: kairos-pulse 2s var(--motion-ease-standard) infinite;

@@ -29,7 +29,7 @@ export const spring = {
   layout: { type: 'spring', stiffness: 480, damping: 38, mass: 0.8 },
 } as const;
 
-const cubicBezier = (curve: Bezier) => `cubic-bezier(${curve.join(', ')})`;
+export const cubicBezier = (curve: Bezier) => `cubic-bezier(${curve.join(', ')})`;
 
 export function applyMotionTokens(root: HTMLElement = document.documentElement) {
   root.style.setProperty('--motion-ease-standard', cubicBezier(ease.standard));
