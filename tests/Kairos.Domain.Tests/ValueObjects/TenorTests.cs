@@ -29,6 +29,18 @@ public class TenorTests
     }
 
     [Fact]
+    public void FromMonths_finds_a_standard_maturity()
+    {
+        Assert.Equal(Tenor.TwoYears, Tenor.FromMonths(24));
+    }
+
+    [Fact]
+    public void FromMonths_rejects_a_non_standard_maturity()
+    {
+        Assert.Throws<DomainException>(() => Tenor.FromMonths(48));
+    }
+
+    [Fact]
     public void Parse_rejects_an_unknown_maturity()
     {
         Assert.Throws<DomainException>(() => Tenor.Parse("4Y"));

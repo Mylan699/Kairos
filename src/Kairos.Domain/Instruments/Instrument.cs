@@ -6,6 +6,12 @@ namespace Kairos.Domain.Instruments;
 /// <summary>Something that can be traded on the desk. All instruments are priced in dollars.</summary>
 public sealed class Instrument
 {
+    // Entity Framework cannot pass an owned object through a constructor.
+    private Instrument()
+    {
+        Symbol = string.Empty;
+    }
+
     private Instrument(Guid id, string symbol, AssetClass assetClass, string? sector, TreasuryBond? bond)
     {
         Id = id;

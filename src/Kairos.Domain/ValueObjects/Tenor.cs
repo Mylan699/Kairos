@@ -36,5 +36,9 @@ public sealed record Tenor
         CurvePoints.FirstOrDefault(tenor => string.Equals(tenor.Label, label, StringComparison.OrdinalIgnoreCase))
         ?? throw new DomainException($"Unknown tenor '{label}'.");
 
+    public static Tenor FromMonths(int months) =>
+        CurvePoints.FirstOrDefault(tenor => tenor.Months == months)
+        ?? throw new DomainException($"No tenor of {months} months.");
+
     public override string ToString() => Label;
 }

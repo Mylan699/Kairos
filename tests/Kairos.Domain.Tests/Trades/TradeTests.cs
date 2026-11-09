@@ -68,6 +68,16 @@ public class TradeTests
     }
 
     [Fact]
+    public void Audit_lines_are_numbered_in_order()
+    {
+        var trade = NewTrade();
+        trade.Validate(Actor, Later);
+        trade.Settle(Actor, Later);
+
+        Assert.Equal([1, 2, 3], trade.AuditTrail.Select(entry => entry.Sequence));
+    }
+
+    [Fact]
     public void A_settled_trade_cannot_be_cancelled()
     {
         var trade = NewTrade();
@@ -125,6 +135,14 @@ public class TradeTests
         Assert.Equal(AuditAction.Amended, audit.Action);
         Assert.Equal(2, audit.Version);
         Assert.Equal("Quantity: 100 -> 120; Price: 50 -> 50.5", audit.Details);
+    }
+
+    [Fact]
+    public void The_audit_trail_ignores_the_trailing_zeros_of_stored_decimals()
+    {
+        var changes = Terms(quantity: 120m).DescribeChangesFrom(Terms(quantity: 100.5000m));
+
+        Assert.Equal("Quantity: 100.5 -> 120", changes);
     }
 
     [Fact]

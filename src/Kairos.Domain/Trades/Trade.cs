@@ -97,7 +97,7 @@ public sealed class Trade
 
     private void RecordAudit(DateTimeOffset at, string actor, AuditAction action, string details = "")
     {
-        auditTrail.Add(new AuditEntry(at, actor, action, Status, CurrentVersion.Number, details));
+        auditTrail.Add(new AuditEntry(auditTrail.Count + 1, at, actor, action, Status, CurrentVersion.Number, details));
     }
 
     // Checked before anything changes, so a trade can never move without an audit line.

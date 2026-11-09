@@ -1,3 +1,4 @@
+using System.Globalization;
 using Kairos.Domain.Common;
 using Kairos.Domain.Positions;
 using Kairos.Domain.ValueObjects;
@@ -88,9 +89,14 @@ public sealed record TradeTerms
         {
             if (!EqualityComparer<T>.Default.Equals(before, after))
             {
-                changes.Add(FormattableString.Invariant($"{field}: {before} -> {after}"));
+                changes.Add($"{field}: {Format(before)} -> {Format(after)}");
             }
         }
+
+        // A decimal read from the database keeps the scale of its column: 100.5 comes back as 100.5000.
+        static string Format<T>(T value) => value is decimal number
+            ? number.ToString("G29", CultureInfo.InvariantCulture)
+            : FormattableString.Invariant($"{value}");
 
         Compare(nameof(InstrumentId), previous.InstrumentId, InstrumentId);
         Compare(nameof(Side), previous.Side, Side);
