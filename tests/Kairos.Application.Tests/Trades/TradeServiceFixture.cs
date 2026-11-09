@@ -1,11 +1,11 @@
 using Kairos.Application.Abstractions;
+using Kairos.Application.Portfolio;
 using Kairos.Application.Trades;
 using Kairos.Domain.Fx;
 using Kairos.Domain.Instruments;
 using Kairos.Domain.Market;
 using Kairos.Domain.Rates;
 using Kairos.Domain.Reference;
-using Kairos.Domain.Trades;
 using Kairos.Domain.ValueObjects;
 
 namespace Kairos.Application.Tests.Trades;
@@ -33,6 +33,8 @@ internal sealed class TradeServiceFixture
 
     public NotifierSpy Notifier { get; } = new();
 
+    public PortfolioCache Cache { get; } = new();
+
     public TradeService Service { get; }
 
     public TradeServiceFixture()
@@ -42,11 +44,12 @@ internal sealed class TradeServiceFixture
         Service = new TradeService(
             Trades,
             new FixedReferenceData(catalog),
-            new FixedMarketState(),
-            new FixedMarketHistory(),
+            new SettableMarketState(Snapshot(MarketDate, CurrentRate)),
+            new ListedMarketHistory(Snapshot(PastMarketDay, PastRate)),
             Notifier,
+            Cache,
             new FixedActor(),
-            new FixedTime(),
+            new FixedTime(Now),
             new TradeRequestValidator(),
             new CancelTradeRequestValidator());
     }
@@ -72,62 +75,4 @@ internal sealed class TradeServiceFixture
         new Dictionary<Guid, decimal> { [Equity.Id] = 50m },
         new EurUsdQuote(rate, rate),
         new YieldCurve([new CurvePoint(Tenor.TenYears, 0.02m)]));
-
-    internal sealed class InMemoryTrades : ITradeRepository
-    {
-        private readonly List<Trade> trades = [];
-
-        public int SaveCount { get; private set; }
-
-        public Task<Trade?> FindAsync(Guid id, CancellationToken cancellationToken) =>
-            Task.FromResult(trades.FirstOrDefault(trade => trade.Id == id));
-
-        public Task<IReadOnlyList<Trade>> ListAsync(CancellationToken cancellationToken) =>
-            Task.FromResult<IReadOnlyList<Trade>>(trades);
-
-        public void Add(Trade trade) => trades.Add(trade);
-
-        public Task SaveChangesAsync(CancellationToken cancellationToken)
-        {
-            SaveCount++;
-            return Task.CompletedTask;
-        }
-    }
-
-    internal sealed class NotifierSpy : ITradeNotifier
-    {
-        public List<TradeDto> Notifications { get; } = [];
-
-        public Task TradeChangedAsync(TradeDto trade, CancellationToken cancellationToken)
-        {
-            Notifications.Add(trade);
-            return Task.CompletedTask;
-        }
-    }
-
-    private sealed class FixedReferenceData(ReferenceCatalog catalog) : IReferenceDataProvider
-    {
-        public Task<ReferenceCatalog> GetCatalogAsync(CancellationToken cancellationToken) => Task.FromResult(catalog);
-    }
-
-    private sealed class FixedMarketState : IMarketState
-    {
-        public MarketSnapshot Current { get; } = Snapshot(MarketDate, CurrentRate);
-    }
-
-    private sealed class FixedMarketHistory : IMarketHistory
-    {
-        public Task<MarketSnapshot?> GetCloseAsync(DateOnly date, CancellationToken cancellationToken) =>
-            Task.FromResult(date == PastMarketDay ? Snapshot(date, PastRate) : null);
-    }
-
-    private sealed class FixedActor : ICurrentActor
-    {
-        public string Name => "demo.user";
-    }
-
-    private sealed class FixedTime : TimeProvider
-    {
-        public override DateTimeOffset GetUtcNow() => Now;
-    }
 }

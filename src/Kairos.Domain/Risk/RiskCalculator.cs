@@ -28,7 +28,7 @@ public static class RiskCalculator
         var byCurrency = new Dictionary<Currency, Money>();
         var bySector = new Dictionary<string, Money>();
 
-        foreach (var held in positions)
+        foreach (var held in positions.Where(held => held.Instrument.IsTradableOn(market.Date)))
         {
             var markPrice = market.MarkPrice(held.Instrument, held.Position.Quantity);
             var marketValue = held.Position.Value(markPrice, market.UsdPerEur).MarketValue;

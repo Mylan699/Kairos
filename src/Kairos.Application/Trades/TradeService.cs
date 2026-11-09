@@ -1,6 +1,7 @@
 using FluentValidation;
 using Kairos.Application.Abstractions;
 using Kairos.Application.Common;
+using Kairos.Application.Portfolio;
 using Kairos.Domain.Common;
 using Kairos.Domain.Trades;
 
@@ -13,6 +14,7 @@ public sealed class TradeService(
     IMarketState marketState,
     IMarketHistory marketHistory,
     ITradeNotifier notifier,
+    PortfolioCache portfolioCache,
     ICurrentActor actor,
     TimeProvider timeProvider,
     IValidator<TradeRequest> tradeRequestValidator,
@@ -140,6 +142,7 @@ public sealed class TradeService(
     private async Task<TradeDto> SaveAndNotifyAsync(Trade trade, CancellationToken cancellationToken)
     {
         await trades.SaveChangesAsync(cancellationToken);
+        portfolioCache.Invalidate();
 
         var catalog = await referenceData.GetCatalogAsync(cancellationToken);
         var dto = TradeMapper.ToDto(trade, catalog);

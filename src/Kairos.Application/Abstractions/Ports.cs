@@ -31,6 +31,9 @@ public interface IMarketHistory
 {
     /// <summary>Returns the closing market of a date, or null when that date is not a market day.</summary>
     Task<MarketSnapshot?> GetCloseAsync(DateOnly date, CancellationToken cancellationToken);
+
+    /// <summary>Returns the closes of the market days just before a date, oldest first.</summary>
+    Task<IReadOnlyList<MarketSnapshot>> GetClosesBeforeAsync(DateOnly date, int count, CancellationToken cancellationToken);
 }
 
 /// <summary>Tells the rest of the application, and connected screens, that a trade changed.</summary>

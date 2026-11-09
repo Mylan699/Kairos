@@ -1,5 +1,6 @@
 using Kairos.Domain.Common;
 using Kairos.Domain.Instruments;
+using Kairos.Domain.Rates;
 using Kairos.Domain.Risk;
 using Kairos.Domain.ValueObjects;
 using static Kairos.Domain.Tests.Risk.RiskFixture;
@@ -53,6 +54,19 @@ public class RiskCalculatorTests
         BookPosition[] positions = [Held(BookA, TenYear, Side.Buy, 1_000m, 100m), Held(BookA, EurUsd, Side.Buy, 1_000m, 1.25m)];
 
         Assert.Empty(RiskCalculator.Exposures(positions, SampleMarket()).BySector);
+    }
+
+    [Fact]
+    public void A_bond_already_redeemed_is_no_longer_an_exposure()
+    {
+        var redeemed = Instrument.TreasuryBond(
+            Guid.NewGuid(),
+            "UST 2Y",
+            TreasuryBond.Issue(Tenor.TwoYears, new DateOnly(2012, 1, 16), 0.02m));
+
+        var exposures = RiskCalculator.Exposures([Held(BookA, redeemed, Side.Buy, 1_000m, 100m)], SampleMarket());
+
+        Assert.Empty(exposures.ByAssetClass);
     }
 
     [Fact]

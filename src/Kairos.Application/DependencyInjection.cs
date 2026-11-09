@@ -1,4 +1,5 @@
 using FluentValidation;
+using Kairos.Application.Portfolio;
 using Kairos.Application.Trades;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,7 +11,9 @@ public static class DependencyInjection
     {
         services.AddValidatorsFromAssemblyContaining<TradeRequestValidator>();
         services.AddSingleton(TimeProvider.System);
+        services.AddSingleton<PortfolioCache>();
         services.AddScoped<TradeService>();
+        services.AddScoped<PortfolioService>();
 
         return services;
     }
