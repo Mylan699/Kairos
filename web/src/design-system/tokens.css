@@ -1,0 +1,70 @@
+/*
+ * Colour tokens, derived from brand/README.md. Dark is the default theme.
+ * The four brand values are kept exactly: canvas, surface-2, ink and ink-2, plus the accent.
+ * Gain and loss are reserved for price changes and P&L: other states use caution or neutrals.
+ */
+:root {
+  color-scheme: dark;
+
+  --kairos-canvas: #0b0e14;
+  --kairos-surface-1: #10141c;
+  --kairos-surface-2: #151a24;
+  --kairos-surface-3: #1c2230;
+  --kairos-surface-4: #252c3c;
+
+  --kairos-line-subtle: #1c222e;
+  --kairos-line: #2a3242;
+  --kairos-line-strong: #3b4558;
+
+  --kairos-ink: #e8ecf4;
+  --kairos-ink-2: #8a93a6;
+  --kairos-ink-3: #7d869a;
+
+  --kairos-accent: #4f7bff;
+  --kairos-accent-hover: #6b91ff;
+  --kairos-accent-active: #3f69e6;
+  --kairos-accent-soft: rgb(79 123 255 / 14%);
+  --kairos-on-accent: #0b0e14;
+
+  --kairos-gain: #34d399;
+  --kairos-loss: #ff7a7a;
+  --kairos-gain-soft: rgb(52 211 153 / 18%);
+  --kairos-loss-soft: rgb(255 122 122 / 18%);
+
+  --kairos-caution: #e9b25a;
+  --kairos-caution-soft: rgb(233 178 90 / 14%);
+  --kairos-idle: #626b7e;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --kairos-canvas: #f5f6f9;
+  --kairos-surface-1: #fafbfc;
+  --kairos-surface-2: #ffffff;
+  --kairos-surface-3: #eff1f6;
+  --kairos-surface-4: #e4e8ef;
+
+  --kairos-line-subtle: #e9ecf2;
+  --kairos-line: #d9dee7;
+  --kairos-line-strong: #b7bfcc;
+
+  --kairos-ink: #0b0e14;
+  --kairos-ink-2: #566074;
+  --kairos-ink-3: #667085;
+
+  --kairos-accent: #3461f0;
+  --kairos-accent-hover: #2650d8;
+  --kairos-accent-active: #1f44bd;
+  --kairos-accent-soft: rgb(52 97 240 / 10%);
+  --kairos-on-accent: #ffffff;
+
+  --kairos-gain: #067a4e;
+  --kairos-loss: #c22f3a;
+  --kairos-gain-soft: rgb(6 122 78 / 13%);
+  --kairos-loss-soft: rgb(194 47 58 / 12%);
+
+  --kairos-caution: #8f5a00;
+  --kairos-caution-soft: rgb(143 90 0 / 11%);
+  --kairos-idle: #8a93a6;
+}

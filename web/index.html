@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kairos, poste de trading cross-asset</title>
+    <script>
+      // Runs before the first paint, so that the light theme never flashes dark.
+      try {
+        if (localStorage.getItem('kairos-theme') === 'light') {
+          document.documentElement.dataset.theme = 'light';
+        }
+      } catch {
+        // Storage can be unavailable in private browsing: the default theme applies.
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,124 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/geist/wght.css';
+@import '@fontsource-variable/geist-mono/wght.css';
+@import './design-system/tokens.css';
+
+/* Tailwind's default palette is removed: only brand tokens can be used. */
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-canvas: var(--kairos-canvas);
+  --color-surface-1: var(--kairos-surface-1);
+  --color-surface-2: var(--kairos-surface-2);
+  --color-surface-3: var(--kairos-surface-3);
+  --color-surface-4: var(--kairos-surface-4);
+  --color-line-subtle: var(--kairos-line-subtle);
+  --color-line: var(--kairos-line);
+  --color-line-strong: var(--kairos-line-strong);
+  --color-ink: var(--kairos-ink);
+  --color-ink-2: var(--kairos-ink-2);
+  --color-ink-3: var(--kairos-ink-3);
+  --color-accent: var(--kairos-accent);
+  --color-accent-hover: var(--kairos-accent-hover);
+  --color-accent-active: var(--kairos-accent-active);
+  --color-accent-soft: var(--kairos-accent-soft);
+  --color-on-accent: var(--kairos-on-accent);
+  --color-gain: var(--kairos-gain);
+  --color-loss: var(--kairos-loss);
+  --color-gain-soft: var(--kairos-gain-soft);
+  --color-loss-soft: var(--kairos-loss-soft);
+  --color-caution: var(--kairos-caution);
+  --color-caution-soft: var(--kairos-caution-soft);
+  --color-idle: var(--kairos-idle);
+
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+
+  --text-2xs: 11px;
+  --text-2xs--line-height: 16px;
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 13px;
+  --text-sm--line-height: 20px;
+  --text-base: 14px;
+  --text-base--line-height: 20px;
+  --text-lg: 16px;
+  --text-lg--line-height: 24px;
+  --text-xl: 20px;
+  --text-xl--line-height: 28px;
+  --text-2xl: 28px;
+  --text-2xl--line-height: 36px;
+  --text-3xl: 40px;
+  --text-3xl--line-height: 44px;
+  --text-4xl: 64px;
+  --text-4xl--line-height: 68px;
+
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+
+  --ease-standard: var(--motion-ease-standard);
+  --ease-enter: var(--motion-ease-enter);
+  --ease-exit: var(--motion-ease-exit);
+}
+
+@layer base {
+  html {
+    background: var(--kairos-canvas);
+    color: var(--kairos-ink);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    min-height: 100dvh;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--kairos-accent);
+    outline-offset: 1px;
+  }
+
+  ::selection {
+    background: var(--kairos-accent-soft);
+  }
+
+  * {
+    scrollbar-color: var(--kairos-line-strong) transparent;
+    scrollbar-width: thin;
+  }
+}
+
+@layer components {
+  /* Section labels echo the brand signature: mono capitals, widely spaced. */
+  .label {
+    color: var(--kairos-ink-3);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    line-height: 16px;
+    text-transform: uppercase;
+  }
+
+  /* Every figure is tabular, so that a column of prices never jumps. */
+  .num {
+    font-family: var(--font-mono);
+    font-feature-settings: 'tnum' 1, 'zero' 0;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 1ms !important;
+  }
+}
