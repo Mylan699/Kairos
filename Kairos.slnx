@@ -1,10 +1,12 @@
 <Solution>
   <Folder Name="/src/">
+    <Project Path="src/Kairos.Api/Kairos.Api.csproj" />
     <Project Path="src/Kairos.Application/Kairos.Application.csproj" />
     <Project Path="src/Kairos.Domain/Kairos.Domain.csproj" />
     <Project Path="src/Kairos.Infrastructure/Kairos.Infrastructure.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/Kairos.Api.IntegrationTests/Kairos.Api.IntegrationTests.csproj" />
     <Project Path="tests/Kairos.Application.Tests/Kairos.Application.Tests.csproj" />
     <Project Path="tests/Kairos.Domain.Tests/Kairos.Domain.Tests.csproj" />
     <Project Path="tests/Kairos.Infrastructure.Tests/Kairos.Infrastructure.Tests.csproj" />
