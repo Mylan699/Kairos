@@ -12,6 +12,7 @@ internal sealed class DatabaseInitializer(
     KairosDbContext db,
     MarketDataImporter importer,
     ReferenceSeeder referenceSeeder,
+    TradeSeeder tradeSeeder,
     IConfiguration configuration,
     ILogger<DatabaseInitializer> logger)
 {
@@ -33,5 +34,6 @@ internal sealed class DatabaseInitializer(
         }
 
         await referenceSeeder.SeedAsync(cancellationToken);
+        await tradeSeeder.SeedIfEmptyAsync(cancellationToken);
     }
 }

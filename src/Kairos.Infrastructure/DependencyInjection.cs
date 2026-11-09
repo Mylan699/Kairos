@@ -25,6 +25,7 @@ public static class DependencyInjection
 
         services.AddScoped<MarketDataImporter>();
         services.AddScoped<ReferenceSeeder>();
+        services.AddScoped<TradeSeeder>();
         services.AddScoped<DatabaseInitializer>();
 
         return services;
