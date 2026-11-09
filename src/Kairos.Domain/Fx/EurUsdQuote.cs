@@ -30,4 +30,8 @@ public sealed record EurUsdQuote
 
     /// <summary>A buyer of euros pays the ask, a seller of euros receives the bid.</summary>
     public decimal ExecutionPrice(Side side) => side == Side.Buy ? Ask : Bid;
+
+    /// <summary>The price a position could be closed at now: a long sells at the bid, a short buys at the ask.</summary>
+    public decimal ClosingPrice(decimal positionQuantity) =>
+        ExecutionPrice(positionQuantity > 0m ? Side.Sell : Side.Buy);
 }

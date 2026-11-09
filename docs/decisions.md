@@ -43,3 +43,9 @@ Format court : contexte, décision, conséquences.
 - **Contexte** : les ticks EUR/USD sont en UTC, ce qui a été vérifié sur la période, alors que les actions se traitent de 9 h 30 à 16 h à New York, avec un décalage horaire qui varie selon l'heure d'été.
 - **Décision** : stocker et rejouer en UTC, et convertir la séance actions depuis le fuseau `America/New_York` pour chaque date.
 - **Conséquences** : les chocs de change restent alignés sur la séance actions toute l'année.
+
+## ADR-008 : conventions de calcul du P&L
+
+- **Contexte** : le P&L doit être consolidé en euros alors que tous les instruments sont cotés en dollars, avec une décomposition entre effet prix et effet change.
+- **Décision** : coût moyen pondéré, suivi à la fois en dollars et en euros au taux de chaque achat. L'effet prix est le mouvement de prix converti au taux du jour, l'effet change est le mouvement du taux sur le capital investi : leur somme est exactement le P&L en euros. Une position EUR/USD est financée en dollars et n'a donc pas d'effet change sur capital. Les obligations sont suivies au prix clean.
+- **Conséquences** : la décomposition n'a pas de résidu inexpliqué. Le portefeuille est supposé non couvert. Les coupons encaissés et le portage ne sont pas intégrés au P&L, ce qui est une simplification assumée.

@@ -22,6 +22,15 @@ public class EurUsdQuoteTests
     }
 
     [Fact]
+    public void A_long_position_closes_at_the_bid_and_a_short_at_the_ask()
+    {
+        var quote = new EurUsdQuote(1.1000m, 1.1002m);
+
+        Assert.Equal(1.1000m, quote.ClosingPrice(1_000_000m));
+        Assert.Equal(1.1002m, quote.ClosingPrice(-1_000_000m));
+    }
+
+    [Fact]
     public void A_locked_market_with_equal_bid_and_ask_is_accepted()
     {
         Assert.Equal(1.1m, new EurUsdQuote(1.1m, 1.1m).Mid);
