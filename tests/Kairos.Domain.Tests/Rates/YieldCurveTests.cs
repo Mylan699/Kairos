@@ -63,6 +63,16 @@ public class YieldCurveTests
     }
 
     [Fact]
+    public void Blending_moves_each_point_towards_the_other_curve()
+    {
+        var other = Curve.ShiftedBy(200m);
+
+        Assert.Equal(Curve.YieldAt(5m), Curve.BlendedWith(other, 0m).YieldAt(5m));
+        Assert.Equal(0.03m, Curve.BlendedWith(other, 0.5m).YieldAt(5m));
+        Assert.Equal(0.04m, Curve.BlendedWith(other, 1m).YieldAt(5m));
+    }
+
+    [Fact]
     public void An_empty_curve_is_rejected()
     {
         Assert.Throws<DomainException>(() => new YieldCurve([]));

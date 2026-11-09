@@ -53,6 +53,13 @@ public sealed class YieldCurve
         return Points[^1].Yield;
     }
 
+    /// <summary>Moves each point towards another curve: a weight of 0 gives this curve, 1 gives the other.</summary>
+    public YieldCurve BlendedWith(YieldCurve other, decimal weight) =>
+        new(Points.Select(point => point with
+        {
+            Yield = point.Yield + (other.YieldAt(point.Tenor.Years) - point.Yield) * weight,
+        }));
+
     /// <summary>Moves every point of the curve by the same number of basis points.</summary>
     public YieldCurve ShiftedBy(decimal basisPoints) => ShiftedBy(_ => basisPoints);
 
