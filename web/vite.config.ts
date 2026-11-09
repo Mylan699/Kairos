@@ -11,6 +11,8 @@ export default defineConfig({
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },
   server: {
+    // The tests compare the logo with the files of the brand folder, one level up.
+    fs: { allow: ['..'] },
     proxy: {
       '/api': apiTarget,
       '/hubs': { target: apiTarget, ws: true },

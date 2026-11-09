@@ -112,7 +112,31 @@
   }
 }
 
+/* The last tick of the logo breathes while the live feed is connected. */
+.kairos-pulse {
+  animation: kairos-pulse 2s var(--motion-ease-standard) infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes kairos-pulse {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
+  .kairos-pulse {
+    display: none;
+  }
+
   *,
   ::before,
   ::after {
