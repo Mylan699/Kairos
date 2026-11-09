@@ -1,0 +1,39 @@
+# Market data: downloaded locally, never versioned (anchored to the repository root
+# so that source folders named Data, such as EF Core ones, stay tracked)
+/data/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pfx
+secrets.json
+appsettings.*.local.json
+
+# .NET build output
+[Bb]in/
+[Oo]bj/
+TestResults/
+*.user
+*.suo
+.vs/
+
+# Node build output
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+coverage/
+
+# Playwright
+test-results/
+playwright-report/
+
+# Editors and operating systems
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/

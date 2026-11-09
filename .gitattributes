@@ -1,0 +1,13 @@
+* text=auto
+
+# Run inside Linux containers: must keep LF on every platform
+*.sh text eol=lf
+Dockerfile text eol=lf
+*.Dockerfile text eol=lf
+
+*.svg text
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.zip binary
