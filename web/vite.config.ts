@@ -1,12 +1,19 @@
 import { fileURLToPath, URL } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
+import type { Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
 
 const apiTarget = process.env.KAIROS_API_URL ?? 'http://localhost:5080';
 
+/** Social networks need absolute links: the public address is given at build time. */
+const siteUrl = (): Plugin => ({
+  name: 'kairos-site-url',
+  transformIndexHtml: (html) => html.replaceAll('__SITE_URL__', process.env.VITE_SITE_URL ?? ''),
+});
+
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), siteUrl()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
   },

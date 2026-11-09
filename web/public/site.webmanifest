@@ -1,0 +1,21 @@
+{
+  "name": "Kairos, poste de trading cross-asset",
+  "short_name": "Kairos",
+  "description": "Actions, change et taux dans un seul P&L en euros, avec rejeu de journées de marché historiques.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b0e14",
+  "theme_color": "#0b0e14",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
