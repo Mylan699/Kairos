@@ -7,7 +7,7 @@ namespace Kairos.Api.Controllers;
 
 [ApiController]
 [Route("api/replay")]
-public sealed class ReplayController(ReplayService replay) : ControllerBase
+public sealed class ReplayController(ReplayService replay, IntradayService intraday) : ControllerBase
 {
     [HttpGet]
     public ReplayStatusDto Status() => replay.GetStatus();
@@ -17,6 +17,14 @@ public sealed class ReplayController(ReplayService replay) : ControllerBase
 
     [HttpGet("speeds")]
     public IReadOnlyList<int> Speeds() => ReplayLimits.Speeds;
+
+    [HttpGet("intraday")]
+    public Task<IReadOnlyList<IntradayPointDto>> Overview(CancellationToken cancellationToken) =>
+        intraday.GetOverviewAsync(cancellationToken);
+
+    [HttpGet("intraday/{instrumentId:guid}")]
+    public Task<IReadOnlyList<IntradayPriceDto>> Prices(Guid instrumentId, CancellationToken cancellationToken) =>
+        intraday.GetPricesAsync(instrumentId, cancellationToken);
 
     [HttpPost("load")]
     [EnableRateLimiting(SecurityExtensions.WritesPolicy)]

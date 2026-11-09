@@ -2,6 +2,7 @@ using FluentValidation;
 using Kairos.Application.Market;
 using Kairos.Application.Portfolio;
 using Kairos.Application.Risk;
+using Kairos.Domain.Market;
 using Kairos.Domain.ValueObjects;
 
 namespace Kairos.Application.Replay;
@@ -80,10 +81,15 @@ public static class ReplayLimits
     public static IReadOnlyList<int> Speeds { get; } = [30, 60, 120, 240, 600, 1_800];
 }
 
+public sealed record ReplaySession(ReplayDay Day, int Minute);
+
 /// <summary>Controls the replay. It is shared by every visitor of the demo (ADR-011).</summary>
 public interface IReplayControl
 {
     ReplayStatusDto? Status { get; }
+
+    /// <summary>The day being replayed and how far it has gone. Null until the first day is loaded.</summary>
+    ReplaySession? CurrentSession { get; }
 
     /// <returns>False when the date cannot be replayed.</returns>
     Task<bool> LoadDayAsync(DateOnly date, int? startMinute, CancellationToken cancellationToken);

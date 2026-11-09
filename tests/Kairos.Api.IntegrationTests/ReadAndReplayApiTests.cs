@@ -136,6 +136,31 @@ public class ReadAndReplayApiTests(ApiFixture api)
     }
 
     [Fact]
+    public async Task The_intraday_overview_never_goes_beyond_the_replay()
+    {
+        await api.PostAsync<ReplayStatusDto>("/api/replay/pause");
+        await api.PostAsync<ReplayStatusDto>("/api/replay/seek", new SeekReplayRequest(900));
+        await api.PostAsync<ReplayStatusDto>("/api/replay/play");
+        var status = await api.PostAsync<ReplayStatusDto>("/api/replay/pause");
+
+        var points = await api.GetAsync<List<IntradayPointDto>>("/api/replay/intraday");
+
+        Assert.Equal(status.Minute, points[^1].Minute);
+        await api.PostAsync<ReplayStatusDto>("/api/replay/play");
+    }
+
+    [Fact]
+    public async Task Intraday_prices_of_eur_usd_are_available()
+    {
+        var reference = await api.GetAsync<ReferenceDataDto>("/api/market/reference");
+        var eurUsd = reference.Instruments.Single(item => item.AssetClass == AssetClass.Fx);
+
+        var prices = await api.GetAsync<List<IntradayPriceDto>>($"/api/replay/intraday/{eurUsd.Id}");
+
+        Assert.NotEmpty(prices);
+    }
+
+    [Fact]
     public async Task Remarkable_days_are_listed()
     {
         var days = await api.GetAsync<List<RemarkableDayDto>>("/api/replay/days");

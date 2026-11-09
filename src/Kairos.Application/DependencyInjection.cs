@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddScoped<DashboardService>();
         services.AddScoped<MarketService>();
         services.AddScoped<ReplayService>();
+        services.AddScoped<IntradayService>();
 
         return services;
     }

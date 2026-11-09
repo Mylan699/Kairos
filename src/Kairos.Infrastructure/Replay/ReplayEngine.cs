@@ -46,6 +46,17 @@ internal sealed class ReplayEngine(
         }
     }
 
+    public ReplaySession? CurrentSession
+    {
+        get
+        {
+            lock (gate)
+            {
+                return day is null || clock is null ? null : new ReplaySession(day, clock.Minute);
+            }
+        }
+    }
+
     public async Task<bool> LoadDayAsync(DateOnly date, int? startMinute, CancellationToken cancellationToken)
     {
         await using var scope = scopeFactory.CreateAsyncScope();

@@ -96,6 +96,8 @@ public class ReplayServiceTests
 
         public ReplayStatusDto? Status { get; set; } = new(Date, 0, 60, true, 810, 1200);
 
+        public ReplaySession? CurrentSession => null;
+
         public Task<bool> LoadDayAsync(DateOnly date, int? startMinute, CancellationToken cancellationToken)
         {
             if (AcceptsLoad)
