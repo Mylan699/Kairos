@@ -1,5 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { BrowserRouter } from 'react-router';
+import { App } from '@/app/App';
 import { applyMotionTokens } from '@/design-system/motion';
 import './index.css';
 
@@ -7,8 +9,8 @@ applyMotionTokens();
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <main className="grid min-h-dvh place-items-center bg-canvas">
-      <p className="label">Kairos</p>
-    </main>
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
   </StrictMode>,
 );
