@@ -16,7 +16,7 @@ export function Sidebar() {
           <KairosMark size={26} animation="live" connected={connected} />
         </span>
         <span className="hidden xl:inline-flex">
-          <KairosLogo markSize={26} animation="live" connected={connected} withSignature wordmarkClassName="text-lg leading-5" />
+          <KairosLogo markSize={26} animation="live" connected={connected} />
         </span>
       </div>
 

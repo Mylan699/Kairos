@@ -43,7 +43,7 @@ export function Badge({ tone = 'neutral', children }: { tone?: BadgeTone; childr
 }
 
 export const Kbd = ({ children }: { children: ReactNode }) => (
-  <kbd className="num inline-grid h-5 min-w-5 place-items-center rounded-sm border border-line bg-surface-1 px-1 text-2xs text-ink-2">
+  <kbd className="num inline-grid h-5 min-w-5 place-items-center whitespace-nowrap rounded-sm border border-line bg-surface-1 px-1 text-2xs text-ink-2">
     {children}
   </kbd>
 );

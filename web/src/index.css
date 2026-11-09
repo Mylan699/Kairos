@@ -93,23 +93,21 @@
   }
 }
 
-@layer components {
-  /* Section labels echo the brand signature: mono capitals, widely spaced. */
-  .label {
-    color: var(--kairos-ink-3);
-    font-family: var(--font-mono);
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    line-height: 16px;
-    text-transform: uppercase;
-  }
+/* Section labels echo the brand signature: mono capitals, widely spaced. */
+@utility label {
+  color: var(--kairos-ink-3);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  line-height: 16px;
+  text-transform: uppercase;
+}
 
-  /* Every figure is tabular, so that a column of prices never jumps. */
-  .num {
-    font-family: var(--font-mono);
-    font-feature-settings: 'tnum' 1, 'zero' 0;
-    font-variant-numeric: tabular-nums;
-  }
+/* Every figure is tabular, so that a column of prices never jumps. */
+@utility num {
+  font-family: var(--font-mono);
+  font-feature-settings: 'tnum' 1, 'zero' 0;
+  font-variant-numeric: tabular-nums;
 }
 
 /* A loading skeleton: the light passes over it, it does not spin. */

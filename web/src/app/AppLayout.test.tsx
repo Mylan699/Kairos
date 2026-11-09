@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Route, Routes } from 'react-router';
 import type { MarketTick } from '@/api/types';
 import { renderWithLive } from '@/test/renderWithLive';
+import { TradeTicketProvider } from '@/features/trade-ticket/TicketContext';
 import { AppLayout } from './AppLayout';
 import { useHotkeys } from './useHotkeys';
 
@@ -20,16 +21,19 @@ const tick = {
 
 const renderLayout = () =>
   renderWithLive(
-    <Routes>
-      <Route path="/app" element={<AppLayout />}>
-        <Route index element={<p>Contenu</p>} />
-      </Route>
-    </Routes>,
+    <TradeTicketProvider>
+      <Routes>
+        <Route path="/app" element={<AppLayout />}>
+          <Route index element={<p>Contenu</p>} />
+        </Route>
+      </Routes>
+    </TradeTicketProvider>,
   );
 
 describe('AppLayout', () => {
   beforeEach(() => {
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify({ instruments: [], books: [], traders: [], counterparties: [] }))));
+    vi.stubGlobal('fetch', vi.fn(async (url: string) =>
+      new Response(url.endsWith('/reference') ? JSON.stringify({ instruments: [], books: [], traders: [], counterparties: [] }) : '[]')));
   });
 
   it('shows the page and the navigation', () => {
@@ -66,6 +70,31 @@ describe('AppLayout', () => {
     await userEvent.keyboard('?');
 
     expect(screen.getByRole('dialog', { name: 'Raccourcis clavier' })).toBeInTheDocument();
+  });
+});
+
+describe('workstation shortcuts', () => {
+  beforeEach(() => {
+    vi.stubGlobal('fetch', vi.fn(async (url: string) =>
+      new Response(url.endsWith('/reference') ? JSON.stringify({ instruments: [], books: [], traders: [], counterparties: [] }) : '[]')));
+  });
+
+  it('opens a ticket with B and closes it with Escape', async () => {
+    renderLayout();
+
+    await userEvent.keyboard('b');
+    expect(await screen.findByRole('dialog', { name: 'Nouveau trade' })).toBeInTheDocument();
+
+    await userEvent.keyboard('{Escape}');
+    await waitFor(() => expect(screen.queryByRole('dialog', { name: 'Nouveau trade' })).not.toBeInTheDocument());
+  });
+
+  it('opens the command palette with Ctrl K', async () => {
+    renderLayout();
+
+    await userEvent.keyboard('{Control>}k{/Control}');
+
+    expect(await screen.findByPlaceholderText(/Instrument, écran/)).toBeInTheDocument();
   });
 });
 
