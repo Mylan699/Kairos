@@ -48,10 +48,14 @@ if (args.Contains(ImportOnlyArgument))
 }
 
 app.UseForwardedHeaders();
+
+// Before the exception handler, so that the log shows the status actually sent:
+// a refused business rule is a 422, not the 500 an escaping exception would suggest.
+app.UseSerilogRequestLogging();
+
 app.UseSecurityHeaders();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
-app.UseSerilogRequestLogging();
 
 app.UseSwagger();
 app.UseSwaggerUI();
