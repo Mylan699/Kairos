@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# A new push on the same branch makes the previous run useless.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    name: Backend (.NET)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-dotnet@v5
+        with:
+          global-json-file: global.json
+
+      - name: Restore
+        run: dotnet restore Kairos.slnx
+
+      - name: Build
+        run: dotnet build Kairos.slnx --configuration Release --no-restore
+
+      # Domain and application tests run in memory. Infrastructure and API tests start
+      # a real SQL Server with Testcontainers, on the Docker engine of the runner.
+      - name: Test
+        run: dotnet test Kairos.slnx --configuration Release --no-build --logger "console;verbosity=normal"
+
+  frontend:
+    name: Frontend (React)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      # The whole repository is needed: the logo tests compare it with the files of brand/.
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Test
+        run: npm test
+
+      - name: Type check and build
+        run: npm run build
+
+  image:
+    name: Docker image
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v5
+
+      # Checks that the multi-stage Dockerfile still builds. The image is not published.
+      - name: Build
+        run: docker build --tag kairos:ci .
