@@ -13,6 +13,7 @@ function Icon({ children, ...props }: SVGProps<SVGSVGElement> & { children: Reac
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
+      style={{ flexShrink: 0 }}
       {...props}
     >
       {children}

@@ -84,7 +84,6 @@ export function ReplayTimeline({ minute, sessionOpenMinute, sessionCloseMinute, 
             height={plotHeight}
             fill="var(--kairos-surface-3)"
           />
-          <text x={positionOfMinute(sessionOpenMinute, width) + 6} y={14} className="num fill-ink-3 text-2xs">Séance de New York</text>
 
           <line x1={0} x2={width} y1={plotHeight} y2={plotHeight} stroke="var(--kairos-line)" />
 
@@ -112,6 +111,18 @@ export function ReplayTimeline({ minute, sessionOpenMinute, sessionCloseMinute, 
 
           <line x1={cursorX} x2={cursorX} y1={0} y2={plotHeight} stroke="var(--kairos-accent)" />
           <circle cx={cursorX} cy={plotHeight} r={4.25} fill="var(--kairos-accent)" />
+
+          {/* Drawn last, with an outline in the colour of the band, so that the cursor passes behind the text. */}
+          <text
+            x={positionOfMinute(sessionOpenMinute, width) + 6}
+            y={14}
+            stroke="var(--kairos-surface-3)"
+            strokeWidth={4}
+            paintOrder="stroke"
+            className="num fill-ink-3 text-2xs"
+          >
+            {width >= NARROW_WIDTH ? 'Séance de New York' : 'New York'}
+          </text>
         </svg>
       )}
     </div>

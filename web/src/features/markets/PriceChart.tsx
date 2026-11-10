@@ -11,6 +11,7 @@ import { motion, useReducedMotion } from 'motion/react';
 import { useEffect, useRef } from 'react';
 import type { AssetClass, DailyBar, IntradayPrice } from '@/api/types';
 import { duration, ease, useTheme } from '@/design-system';
+import { formatPrice } from '@/lib/format';
 
 const PRICE_DECIMALS: Record<AssetClass, number> = { Equity: 2, Fx: 5, Bond: 3 };
 
@@ -33,7 +34,8 @@ function themedOptions() {
       horzLines: { color: token('line-subtle') },
     },
     rightPriceScale: { borderColor: token('line-subtle') },
-    timeScale: { borderColor: token('line-subtle'), timeVisible: true, secondsVisible: false },
+    // Fixing both edges makes the library keep the first and last labels inside the chart.
+    timeScale: { borderColor: token('line-subtle'), timeVisible: true, secondsVisible: false, fixLeftEdge: true, fixRightEdge: true },
     crosshair: {
       vertLine: { color: token('line-strong'), labelBackgroundColor: token('surface-4') },
       horzLine: { color: token('line-strong'), labelBackgroundColor: token('surface-4') },
@@ -42,8 +44,13 @@ function themedOptions() {
 }
 
 /** The series lives and dies with its chart: removing the chart is enough to release both. */
-function newChart(container: HTMLDivElement): IChartApi {
-  return createChart(container, { autoSize: true, localization: { locale: 'fr-FR' }, ...themedOptions() });
+function newChart(container: HTMLDivElement, assetClass: AssetClass): IChartApi {
+  return createChart(container, {
+    autoSize: true,
+    // The price axis writes numbers like the rest of the application: a comma, not a point.
+    localization: { locale: 'fr-FR', priceFormatter: (price: number) => formatPrice(price, assetClass) },
+    ...themedOptions(),
+  });
 }
 
 /** The chart reveals itself from left to right when it appears, then stays put. */
@@ -77,7 +84,7 @@ export function IntradayChart({ date, assetClass, prices, last }: IntradayChartP
   const lastTimeRef = useRef<number>(0);
 
   useEffect(() => {
-    const chart = newChart(containerRef.current!);
+    const chart = newChart(containerRef.current!, assetClass);
     const series = chart.addSeries(LineSeries, {
       color: token('accent'),
       lineWidth: 2,
@@ -127,7 +134,7 @@ export function DailyChart({ assetClass, bars }: { assetClass: AssetClass; bars:
   const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
 
   useEffect(() => {
-    const chart = newChart(containerRef.current!);
+    const chart = newChart(containerRef.current!, assetClass);
     const series = chart.addSeries(CandlestickSeries, {
       priceLineVisible: false,
       borderVisible: false,

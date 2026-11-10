@@ -65,11 +65,11 @@ function buildColumns(isNarrow: boolean, isComfortable: boolean): Array<ColDef<P
 
   return [
     { field: 'symbol', headerName: 'Instrument', width: 116, cellClass: 'num', pinned: 'left' },
-    { field: 'book', headerName: 'Book', flex: 1, minWidth: 116, hide: isNarrow },
+    { field: 'book', headerName: 'Book', flex: 1, minWidth: 156, hide: isNarrow },
     { field: 'assetClass', headerName: 'Classe', width: 84, hide: isNarrow || !isComfortable, valueFormatter: ({ value }: ValueFormatterParams<Position, Position['assetClass']>) => (value ? ASSET_CLASS_LABELS[value] : '') },
-    { field: 'sector', headerName: 'Secteur', flex: 1, minWidth: 104, hide: isNarrow, valueFormatter: ({ value }: ValueFormatterParams<Position, string | null>) => (value ? sectorLabel(value) : '—') },
+    { field: 'sector', headerName: 'Secteur', flex: 1, minWidth: 164, hide: isNarrow || !isComfortable, valueFormatter: ({ value }: ValueFormatterParams<Position, string | null>) => (value ? sectorLabel(value) : '—') },
     { field: 'quantity', headerName: 'Quantité', width: 96, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, valueFormatter: ({ value }: ValueFormatterParams<Position, number>) => formatQuantity(value) },
-    { field: 'averagePrice', headerName: 'Coût moyen', width: 88, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, hide: isNarrow, valueFormatter: ({ value, data }: ValueFormatterParams<Position, number>) => (data ? formatPrice(value, data.assetClass) : '') },
+    { field: 'averagePrice', headerName: 'Coût moyen', width: 108, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, hide: isNarrow, valueFormatter: ({ value, data }: ValueFormatterParams<Position, number>) => (data ? formatPrice(value, data.assetClass) : '') },
     { field: 'markPrice', headerName: 'Cours', width: 88, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, cellRenderer: PriceCell },
     { field: 'marketValue', headerName: 'Valeur EUR', width: 96, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, hide: isNarrow, valueFormatter: ({ value }: ValueFormatterParams<Position, number>) => formatCompactEur(value, false) },
     pnlColumn('Jour', 'pnl.day', 108),

@@ -101,7 +101,11 @@ const longDate = new Intl.DateTimeFormat(LOCALE, { weekday: 'long', day: 'numeri
 
 export const formatDate = (iso: string): string => shortDate.format(parseIsoDate(iso));
 
-export const formatLongDate = (iso: string): string => longDate.format(parseIsoDate(iso));
+/** Only the weekday takes a capital: CSS `capitalize` would also raise the month, which is wrong in French. */
+export function formatLongDate(iso: string): string {
+  const text = longDate.format(parseIsoDate(iso));
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 
 /** Minutes since midnight UTC, shown as a clock time. */
 export function formatMinute(minute: number): string {

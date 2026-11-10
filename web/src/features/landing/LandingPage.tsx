@@ -37,11 +37,14 @@ const FLOWS: ReadonlyArray<[string, string, string]> = [
   ['Obligations', 'Flux actualisés sur la courbe des taux', 'Prix clean, duration et DV01, puis conversion'],
 ];
 
+// One line per asset: three columns when there is room, stacked on a phone.
+const FLOW_ROW = 'gap-1 border-b border-line-subtle px-4 last:border-b-0 sm:grid-cols-[7rem_minmax(0,1fr)_minmax(0,1fr)] sm:gap-4';
+
 const LEDGER: ReadonlyArray<[string, string, string?]> = [
   ['Achat de 100 actions à 45,00 $, 1 € = 1,125 $', '4 000,00 €'],
-  ['Cours actuel 50,00 $, 1 € = 1,100 $', '4 545,45 €'],
-  ['Effet prix : 100 × 5,00 $ ÷ 1,10', '+454,55 €', 'text-gain'],
-  ['Effet change : 100 × (45 ÷ 1,10 − 40,00 €)', '+90,91 €', 'text-gain'],
+  ['Cours actuel 54,00 $, 1 € = 1,200 $', '4 500,00 €'],
+  ['Effet prix : 100 × 9,00 $ ÷ 1,20', '+750,00 €', 'text-gain'],
+  ['Effet change : 100 × (45 ÷ 1,20 − 40,00 €)', '−250,00 €', 'text-loss'],
 ];
 
 const LAYERS: ReadonlyArray<[string, string]> = [
@@ -160,25 +163,19 @@ export default function LandingPage() {
             Tout est coté en dollars, tout est reporté en euros. L'EUR/USD n'est donc pas un marché parmi d'autres : c'est lui qui relie les trois.
           </p>
 
-          <div className="mt-8 overflow-x-auto rounded-md border border-line-subtle">
-            <table className="w-full min-w-[540px] text-left text-sm">
-              <thead>
-                <tr className="border-b border-line-subtle">
-                  <th scope="col" className="label px-4 py-2.5 font-normal">Actif</th>
-                  <th scope="col" className="label px-4 py-2.5 font-normal">Valorisation</th>
-                  <th scope="col" className="label px-4 py-2.5 font-normal">Vers l'euro</th>
-                </tr>
-              </thead>
-              <tbody>
-                {FLOWS.map(([asset, valuation, conversion]) => (
-                  <tr key={asset} className="border-b border-line-subtle last:border-b-0">
-                    <th scope="row" className="px-4 py-3 font-medium text-ink">{asset}</th>
-                    <td className="px-4 py-3 text-ink-2">{valuation}</td>
-                    <td className="px-4 py-3 text-ink-2">{conversion}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="mt-8 rounded-md border border-line-subtle text-sm">
+            <div aria-hidden="true" className={`${FLOW_ROW} hidden py-2.5 sm:grid`}>
+              <span className="label">Actif</span>
+              <span className="label">Valorisation</span>
+              <span className="label">Vers l'euro</span>
+            </div>
+            {FLOWS.map(([asset, valuation, conversion]) => (
+              <dl key={asset} className={`${FLOW_ROW} grid py-3`}>
+                <dt className="font-medium text-ink">{asset}</dt>
+                <dd className="text-ink-2"><span className="sr-only">Valorisation : </span>{valuation}</dd>
+                <dd className="text-ink-2"><span className="sr-only">Vers l'euro : </span>{conversion}</dd>
+              </dl>
+            ))}
           </div>
 
           <h3 className="label mt-10">Exemple : effet prix et effet change</h3>
@@ -191,7 +188,7 @@ export default function LandingPage() {
             ))}
             <div className="flex items-baseline justify-between gap-4 border-t border-line px-4 py-3">
               <dt className="text-sm font-medium text-ink">P&amp;L latent</dt>
-              <dd className="num whitespace-nowrap text-base font-medium text-gain">+545,45 €</dd>
+              <dd className="num whitespace-nowrap text-base font-medium text-gain">+500,00 €</dd>
             </div>
           </dl>
         </Section>

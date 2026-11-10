@@ -14,6 +14,9 @@ const DAILY_BAR_COUNT = 250;
 const HISTORY_DAY_COUNT = 260;
 const NO_COMPARISON = 'none';
 
+// Leaves the two charts and their credit on a single screen at 1440 x 900.
+const CHART_HEIGHT = 'h-[364px]';
+
 const ASSET_ORDER: AssetClass[] = ['Fx', 'Bond', 'Equity'];
 
 const MODE_SEGMENTS = [
@@ -89,7 +92,7 @@ function ChartPanel({ tick, quote, assetClass }: { tick: MarketTick; quote: Quot
 
   return (
     <Panel
-      className="h-[420px]"
+      className={CHART_HEIGHT}
       flush
       title={quote.symbol}
       aside={
@@ -158,9 +161,9 @@ function CurvePanel({ tick, eurUsdId }: { tick: MarketTick; eurUsdId: string | n
 
   return (
     <Panel
-      title="Courbe des taux du Trésor américain"
+      title="Courbe des taux US"
       aside={
-        <dl className="flex items-baseline gap-4">
+        <dl className="flex items-baseline gap-4 whitespace-nowrap">
           <div className="flex items-baseline gap-1.5">
             <dt className="label">10 ans</dt>
             <dd className="num text-sm text-ink">{formatYield(tenYear?.yieldPercent)}</dd>
@@ -185,7 +188,7 @@ function MarketsSkeleton() {
   return (
     <div className="grid gap-2 md:gap-3 xl:grid-cols-12" aria-busy="true" aria-label="Chargement des marchés">
       <Skeleton className="h-96 xl:col-span-3 xl:row-span-2 xl:h-auto" />
-      <Skeleton className="h-[420px] xl:col-span-9" />
+      <Skeleton className={cx(CHART_HEIGHT, 'xl:col-span-9')} />
       <Skeleton className="h-96 xl:col-span-9" />
     </div>
   );
@@ -207,7 +210,7 @@ export default function MarketsPage() {
 
   return (
     <div className="grid items-start gap-2 md:gap-3 xl:grid-cols-12">
-      <Panel flush title="Instruments" className="order-3 xl:sticky xl:top-[60px] xl:order-none xl:col-span-3 xl:row-span-2 xl:h-[calc(100dvh-4.5rem)]">
+      <Panel flush title="Instruments" className="order-3 xl:sticky xl:top-15 xl:order-none xl:col-span-3 xl:row-span-2 xl:h-[calc(100dvh-4.5rem)]">
         <Watchlist quotes={tick.quotes} selectedId={selectedId} onSelect={(id) => setSearchParams({ instrument: id })} />
       </Panel>
 

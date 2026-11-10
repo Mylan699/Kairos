@@ -21,6 +21,9 @@ import { contributors, exposureByAssetClass, figuresFor, positionsOfBook } from 
 const CONTRIBUTOR_COUNT = 5;
 const MINI_CHART_HEIGHT = 40;
 
+// A phone has room for the two results of a book, not for its market value as well.
+const WIDE_ONLY = 'hidden sm:table-cell';
+
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="flex flex-col gap-0.5">
@@ -76,7 +79,7 @@ function BooksTable({ summary }: { summary: PortfolioSummary }) {
         <thead>
           <tr className="text-left">
             <th scope="col" className="label px-3 py-2 font-normal">Book</th>
-            <th scope="col" className="label px-3 py-2 text-right font-normal">Valeur</th>
+            <th scope="col" className={cx('label px-3 py-2 text-right font-normal', WIDE_ONLY)}>Valeur</th>
             <th scope="col" className="label px-3 py-2 text-right font-normal">Jour</th>
             <th scope="col" className="label px-3 py-2 text-right font-normal">Cumul</th>
           </tr>
@@ -94,20 +97,20 @@ function BooksTable({ summary }: { summary: PortfolioSummary }) {
                   {book.book}
                 </button>
               </td>
-              <td className="num px-3 py-2 text-right text-ink-2">{formatCompactEur(book.marketValue, false)}</td>
-              <td className={cx('num px-3 py-2 text-right', trendClass(book.pnl.day))}>{formatSignedEur(book.pnl.day, 0)}</td>
-              <td className={cx('num px-3 py-2 text-right', trendClass(book.pnl.total))}>{formatCompactEur(book.pnl.total)}</td>
+              <td className={cx('num whitespace-nowrap px-3 py-2 text-right text-ink-2', WIDE_ONLY)}>{formatCompactEur(book.marketValue, false)}</td>
+              <td className={cx('num whitespace-nowrap px-3 py-2 text-right', trendClass(book.pnl.day))}>{formatSignedEur(book.pnl.day, 0)}</td>
+              <td className={cx('num whitespace-nowrap px-3 py-2 text-right', trendClass(book.pnl.total))}>{formatCompactEur(book.pnl.total)}</td>
             </tr>
           ))}
         </tbody>
         <tfoot>
           <tr className="border-t border-line">
             <th scope="row" className="px-3 py-2 text-left font-medium text-ink">Desk</th>
-            <td className="num px-3 py-2 text-right text-ink-2">
+            <td className={cx('num whitespace-nowrap px-3 py-2 text-right text-ink-2', WIDE_ONLY)}>
               {formatCompactEur(summary.books.reduce((total, book) => total + book.marketValue, 0), false)}
             </td>
-            <td className={cx('num px-3 py-2 text-right', trendClass(summary.total.day))}>{formatSignedEur(summary.total.day, 0)}</td>
-            <td className={cx('num px-3 py-2 text-right', trendClass(summary.total.total))}>{formatCompactEur(summary.total.total)}</td>
+            <td className={cx('num whitespace-nowrap px-3 py-2 text-right', trendClass(summary.total.day))}>{formatSignedEur(summary.total.day, 0)}</td>
+            <td className={cx('num whitespace-nowrap px-3 py-2 text-right', trendClass(summary.total.total))}>{formatCompactEur(summary.total.total)}</td>
           </tr>
         </tfoot>
       </table>

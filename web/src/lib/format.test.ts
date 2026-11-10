@@ -96,7 +96,7 @@ describe('colour of a variation', () => {
 describe('dates and times', () => {
   it('reads an ISO date without shifting the day', () => {
     expect(formatDate('2016-06-24')).toBe('24/06/2016');
-    expect(formatLongDate('2020-03-16')).toBe('lundi 16 mars 2020');
+    expect(formatLongDate('2020-03-16')).toBe('Lundi 16 mars 2020');
   });
 
   it('turns minutes since midnight into a clock time', () => {

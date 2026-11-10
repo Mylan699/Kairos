@@ -39,7 +39,7 @@ function MarketClock() {
 
   return (
     <p className="num min-w-0 shrink-0 whitespace-nowrap text-xs text-ink-2">
-      <span className="hidden capitalize text-ink sm:inline">{formatLongDate(tick.status.date)}</span>
+      <span className="hidden text-ink sm:inline">{formatLongDate(tick.status.date)}</span>
       <span className="hidden sm:inline"> · </span>
       <span className="text-ink sm:text-ink-2">{formatMinute(tick.status.minute)} UTC</span>
     </p>
@@ -116,7 +116,7 @@ export function TopBar({ onShowShortcuts, onOpenPalette }: { onShowShortcuts: ()
       <button
         type="button"
         onClick={onOpenPalette}
-        className="hidden h-8 w-44 items-center gap-2 rounded-md border border-line bg-surface-1 px-2.5 text-sm text-ink-3 transition-colors duration-[var(--motion-fast)] hover:border-line-strong xl:flex"
+        className="hidden h-8 w-52 items-center gap-2 rounded-md border border-line bg-surface-1 px-2.5 text-sm text-ink-3 transition-colors duration-[var(--motion-fast)] hover:border-line-strong xl:flex"
       >
         <SearchIcon />
         Rechercher

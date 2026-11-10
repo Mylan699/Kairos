@@ -3,7 +3,7 @@ import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 import type { Quote } from '@/api/types';
 import LandingPage from './LandingPage';
-import { biggestMove } from './LiveFeed';
+import { biggestMove, largestDayMoves } from './LiveFeed';
 
 const renderPage = () => render(<MemoryRouter><LandingPage /></MemoryRouter>);
 
@@ -35,11 +35,30 @@ describe('LandingPage', () => {
     expect(screen.getByText(/CC BY-NC 4.0/)).toBeInTheDocument();
   });
 
-  it('shows a worked example whose parts add up', () => {
+  it('shows a worked example with its price effect, currency effect and total', () => {
     renderPage();
 
-    expect(454.55 + 90.91).toBeCloseTo(545.46, 2);
-    expect(screen.getByText('+545,45 €')).toBeInTheDocument();
+    expect(screen.getByText('+750,00 €')).toBeInTheDocument();
+    expect(screen.getByText('−250,00 €')).toBeInTheDocument();
+    expect(screen.getByText('+500,00 €')).toBeInTheDocument();
+  });
+});
+
+describe('largestDayMoves', () => {
+  const quote = (id: string, changePercent: number) => ({ instrumentId: id, symbol: id, changePercent }) as Quote;
+
+  it('ranks by the size of the move, up or down', () => {
+    const moves = largestDayMoves([quote('a', 1), quote('b', -5), quote('c', 3)], 2);
+
+    expect(moves.map((item) => item.instrumentId)).toEqual(['b', 'c']);
+  });
+
+  it('leaves the quotes it was given in their order', () => {
+    const quotes = [quote('a', 1), quote('b', -5)];
+
+    largestDayMoves(quotes, 2);
+
+    expect(quotes[0]?.instrumentId).toBe('a');
   });
 });
 

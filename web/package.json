@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "lint": "eslint src",
-    "generate:brand": "node scripts/generate-brand-assets.mjs"
+    "generate:brand": "node scripts/generate-brand-assets.mjs",
+    "visual:review": "node scripts/visual-review.mjs"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.3.0",

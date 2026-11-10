@@ -17,6 +17,9 @@ function Sensitivity({ title, value, hint, isResult = true }: { title: string; v
   );
 }
 
+// Tighter on a phone, so that the four columns fit without scrolling.
+const CELL = 'whitespace-nowrap px-1.5 py-2 first:pl-3 last:pr-3 sm:px-3';
+
 function BookTable({ report }: { report: RiskReport }) {
   const { bookId } = useBookFilter();
 
@@ -25,19 +28,19 @@ function BookTable({ report }: { report: RiskReport }) {
       <table className="w-full text-xs">
         <thead>
           <tr className="text-left">
-            <th scope="col" className="label px-3 py-2 font-normal">Book</th>
-            <th scope="col" className="label whitespace-nowrap px-3 py-2 text-right font-normal">Δ actions</th>
-            <th scope="col" className="label whitespace-nowrap px-3 py-2 text-right font-normal">Δ change</th>
-            <th scope="col" className="label px-3 py-2 text-right font-normal">DV01</th>
+            <th scope="col" className={cx('label font-normal', CELL)}>Book</th>
+            <th scope="col" className={cx('label text-right font-normal', CELL)}><span className="hidden sm:inline">Δ </span>actions</th>
+            <th scope="col" className={cx('label text-right font-normal', CELL)}><span className="hidden sm:inline">Δ </span>change</th>
+            <th scope="col" className={cx('label text-right font-normal', CELL)}>DV01</th>
           </tr>
         </thead>
         <tbody>
           {report.books.map((book) => (
             <tr key={book.bookId} className={cx('border-t border-line-subtle', book.bookId === bookId && 'bg-accent-soft')}>
-              <td className="whitespace-nowrap px-3 py-2 text-ink">{book.book}</td>
-              <td className={cx('num whitespace-nowrap px-3 py-2 text-right', trendClass(book.equityDelta))}>{formatCompactEur(book.equityDelta)}</td>
-              <td className={cx('num whitespace-nowrap px-3 py-2 text-right', trendClass(book.fxDelta))}>{formatCompactEur(book.fxDelta)}</td>
-              <td className="num whitespace-nowrap px-3 py-2 text-right text-ink">{formatCompactEur(book.dv01)}</td>
+              <td className={cx('text-ink', CELL)}>{book.book}</td>
+              <td className={cx('num text-right', CELL, trendClass(book.equityDelta))}>{formatCompactEur(book.equityDelta)}</td>
+              <td className={cx('num text-right', CELL, trendClass(book.fxDelta))}>{formatCompactEur(book.fxDelta)}</td>
+              <td className={cx('num text-right text-ink', CELL)}>{formatCompactEur(book.dv01)}</td>
             </tr>
           ))}
         </tbody>

@@ -28,6 +28,7 @@ coverage/
 # Playwright
 test-results/
 playwright-report/
+visual-review/
 
 # Editors and operating systems
 .idea/

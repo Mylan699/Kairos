@@ -9,7 +9,7 @@ import { ASSET_CLASS_LABELS } from '@/lib/labels';
 import { LiveProvider, useLive, useLiveStore } from '@/realtime/live';
 import { getLiveStore } from '@/realtime/sharedStore';
 
-const VISIBLE_ROWS = 7;
+const VISIBLE_ROWS = 9;
 const ROW_HEIGHT = 'h-8';
 
 export interface FeedRow {
@@ -36,31 +36,45 @@ export function biggestMove(previous: readonly Quote[], current: readonly Quote[
   return best;
 }
 
+/** The largest moves since the previous close: the feed has something true to show from the very first tick. */
+export function largestDayMoves(quotes: readonly Quote[], count: number): Quote[] {
+  return [...quotes].sort((a, b) => Math.abs(b.changePercent) - Math.abs(a.changePercent)).slice(0, count);
+}
+
+const toRow = (minute: number, quote: Quote): FeedRow => ({ key: `${minute}-${quote.instrumentId}`, minute, quote });
+
 function useFeedRows(): FeedRow[] {
   const store = useLiveStore();
   const [rows, setRows] = useState<FeedRow[]>([]);
   const previousTick = useRef<MarketTick | null>(null);
 
-  useEffect(
-    () =>
-      store.subscribe(() => {
-        const tick = store.getState().tick;
-        const previous = previousTick.current;
+  useEffect(() => {
+    const readTick = () => {
+      const tick = store.getState().tick;
+      const previous = previousTick.current;
 
-        if (!tick || tick === previous) {
-          return;
-        }
+      if (!tick || tick === previous) {
+        return;
+      }
 
-        previousTick.current = tick;
+      previousTick.current = tick;
 
-        const mover = previous ? biggestMove(previous.quotes, tick.quotes) : null;
-        if (mover) {
-          const row = { key: `${tick.status.minute}-${mover.instrumentId}`, minute: tick.status.minute, quote: mover };
-          setRows((current) => [row, ...current.filter((item) => item.key !== row.key)].slice(0, VISIBLE_ROWS));
-        }
-      }),
-    [store],
-  );
+      if (!previous) {
+        setRows(largestDayMoves(tick.quotes, VISIBLE_ROWS).map((quote) => toRow(tick.status.minute, quote)));
+        return;
+      }
+
+      const mover = biggestMove(previous.quotes, tick.quotes);
+      if (mover) {
+        const row = toRow(tick.status.minute, mover);
+        setRows((current) => [row, ...current.filter((item) => item.key !== row.key)].slice(0, VISIBLE_ROWS));
+      }
+    };
+
+    // The shared store may already hold a tick when the visitor comes back to this page.
+    readTick();
+    return store.subscribe(readTick);
+  }, [store]);
 
   return rows;
 }
@@ -83,8 +97,14 @@ function Feed() {
             <span className={cx('size-1.5 rounded-full', status === 'connected' ? 'bg-accent' : 'bg-idle')} />
             {status === 'connected' ? 'Rejeu en direct' : 'Connexion au flux'}
           </p>
-          <p className="num mt-1 min-h-5 text-sm capitalize text-ink">
-            {tick ? `${formatLongDate(tick.status.date)} · ${formatMinute(tick.status.minute)} UTC` : ' '}
+          <p className="num mt-1 min-h-10 whitespace-nowrap text-sm text-ink sm:min-h-5">
+            {tick && (
+              <>
+                <span className="block sm:inline">{formatLongDate(tick.status.date)}</span>
+                <span className="hidden sm:inline"> · </span>
+                <span className="block sm:inline">{formatMinute(tick.status.minute)} UTC</span>
+              </>
+            )}
           </p>
         </div>
         <div className="text-right">

@@ -105,7 +105,7 @@ export default function ReplayPage() {
       <Panel title="Machine à remonter le temps">
         <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
           <div>
-            <p className="text-sm capitalize text-ink-2">{formatLongDate(status.date)}</p>
+            <p className="text-sm text-ink-2">{formatLongDate(status.date)}</p>
             <p className="num text-3xl font-medium text-ink">
               {formatMinute(status.minute)}
               <span className="ml-2 text-base text-ink-3">UTC</span>
@@ -150,7 +150,8 @@ export default function ReplayPage() {
       <Panel
         title="Journées remarquables"
         aside={
-          <form onSubmit={onSubmitDate} className="flex items-center gap-2">
+          // Typing a date is left to larger screens: on a phone the day cards are enough.
+          <form onSubmit={onSubmitDate} className="hidden items-center gap-2 sm:flex">
             <input
               aria-label="Autre date à rejouer"
               className={cx(CONTROL_CLASSES, 'num h-7 w-28 text-xs')}
