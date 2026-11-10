@@ -20,6 +20,11 @@ function Sensitivity({ title, value, hint, isResult = true }: { title: string; v
 // Tighter on a phone, so that the four columns fit without scrolling.
 const CELL = 'whitespace-nowrap px-1.5 py-2 first:pl-3 last:pr-3 sm:px-3';
 
+// The table by book needs about 440 px: three equal columns only leave it that much on wide screens.
+// Below, the sectors take two columns and the table the whole row.
+const WIDE_BELOW_2XL = 'md:col-span-2 2xl:col-span-1';
+const FULL_BELOW_2XL = 'md:col-span-3 2xl:col-span-1';
+
 function BookTable({ report }: { report: RiskReport }) {
   const { bookId } = useBookFilter();
 
@@ -57,8 +62,8 @@ function RiskSkeleton() {
       <Skeleton className="h-28" />
       <Skeleton className="h-80 md:col-span-3" />
       <Skeleton className="h-64" />
-      <Skeleton className="h-64" />
-      <Skeleton className="h-64" />
+      <Skeleton className={cx('h-64', WIDE_BELOW_2XL)} />
+      <Skeleton className={cx('h-64', FULL_BELOW_2XL)} />
     </div>
   );
 }
@@ -103,14 +108,14 @@ export default function RiskPage() {
         />
       </Panel>
 
-      <Panel title="Exposition par secteur">
+      <Panel title="Exposition par secteur" className={WIDE_BELOW_2XL}>
         <BarList
           labelWidth="9.5rem"
           items={report.bySector.map((line) => ({ key: line.key, label: sectorLabel(line.key), value: line.eur, valueText: formatCompactEur(line.eur, false) }))}
         />
       </Panel>
 
-      <Panel title="Sensibilités par book" flush>
+      <Panel title="Sensibilités par book" flush className={FULL_BELOW_2XL}>
         <BookTable report={report} />
       </Panel>
     </div>

@@ -1,6 +1,6 @@
 # Revue visuelle
 
-Contrôle de chaque écran à 1440 et 390 px, en thème sombre et clair (28 captures), avec `npm run visual:review` sur le build de production. Le script fige le rejeu au 16 mars 2020 à 15:00 UTC pour que deux revues restent comparables et mesure ce qui peut l'être : débordement horizontal, zones à défilement horizontal, couleur de fond par thème, chargement de Geist et Geist Mono, erreurs de console. Les captures sont ensuite examinées à l'œil et comparées à `brand/`.
+Contrôle de chaque écran à 1440, 1280 et 390 px, en thème sombre et clair (42 captures), avec `npm run visual:review` sur le build de production. Le script fige le rejeu au 16 mars 2020 à 15:00 UTC pour que deux revues restent comparables et mesure ce qui peut l'être : débordement horizontal, tableaux et grilles qui défilent horizontalement sur un écran de bureau, couleur de fond par thème, chargement de Geist et Geist Mono, erreurs de console. Les captures sont ensuite examinées à l'œil et comparées à `brand/`.
 
 ## Défauts ouverts
 
@@ -25,6 +25,9 @@ Aucun.
 | 13 | Risques | 390 | Table des sensibilités plus large que son panneau. | Cellules resserrées, symbole Δ masqué sur téléphone. |
 | 14 | Rejeu | toutes | Le curseur traversait « Séance de New York », qui sortait de sa zone à 390 px. | Étiquette dessinée au-dessus du curseur, raccourcie sur téléphone. |
 | 15 | Rejeu | 390 | Titre « Journées remarquables » sur deux lignes. | Saisie d'une date libre réservée aux écrans plus larges. |
+| 16 | Risques | 1280 | Colonne DV01 des sensibilités par book coupée. | Sous 1 344 px, les secteurs prennent deux colonnes et la table toute la largeur. |
+| 17 | Positions | 1280 | Colonne Effet change hors de l'écran. | Coût moyen masqué sous 1 200 px de grille, colonne Book resserrée. |
+| 18 | Blotter | 1280 | Colonne Statut coupée. | Classe (déjà proposée en filtre) et version masquées sous 1 200 px de grille. |
 
 ## Ce qui n'est pas un défaut
 

@@ -23,8 +23,10 @@ const PAGES = [
   ['replay', '/app/replay'],
 ].filter(([name]) => !ONLY || ONLY.includes(name));
 
+// 1280 is the most common laptop width: three columns of panels are at their narrowest there.
 const VIEWPORTS = [
   ['1440', { width: 1440, height: 900 }],
+  ['1280', { width: 1280, height: 800 }],
   ['390', { width: 390, height: 844 }],
 ];
 
@@ -76,7 +78,11 @@ for (const [pageName, path] of PAGES) {
         hasMonoFigures: Boolean(document.querySelector('.num')) && getComputedStyle(document.querySelector('.num')).fontFamily.includes('Geist Mono'),
         geistLoaded: document.fonts.check('14px "Geist Variable"'),
         scrollingTables: [...document.querySelectorAll('.overflow-x-auto')].filter((zone) => zone.scrollWidth > zone.clientWidth).length,
+        scrollingGrids: [...document.querySelectorAll('.ag-grid-viewport')].filter((zone) => zone.scrollWidth > zone.clientWidth).length,
       }));
+
+      // On a phone a grid may scroll sideways. On a desktop screen every column must be visible.
+      const isDesktop = viewport.width >= 1280;
 
       const file = `${pageName}-${widthName}-${theme}.png`;
       await page.screenshot({ path: `${OUTPUT}${file}`, fullPage: true });
@@ -84,6 +90,7 @@ for (const [pageName, path] of PAGES) {
       const problems = [
         ...(measured.horizontalOverflow > 0 ? [`débordement horizontal de ${measured.horizontalOverflow} px`] : []),
         ...(measured.scrollingTables > 0 ? [`${measured.scrollingTables} zone(s) à défilement horizontal`] : []),
+        ...(isDesktop && measured.scrollingGrids > 0 ? [`${measured.scrollingGrids} grille(s) à défilement horizontal`] : []),
         ...(measured.background === CANVAS[theme] ? [] : [`fond ${measured.background}`]),
         ...(measured.fontFamily.includes('Geist') && measured.geistLoaded ? [] : ['police Geist absente']),
         ...(measured.hasMonoFigures || pageName === 'landing' ? [] : ['chiffres sans Geist Mono']),

@@ -16,6 +16,8 @@ import { StatusBadge } from './StatusBadge';
 import { TradeDetailDrawer } from './TradeDetailDrawer';
 
 const NARROW_WIDTH = 720;
+// Every column needs 1 170 px. Below this width, the class (also a filter) and the version step aside.
+const WIDE_WIDTH = 1_200;
 const HIGHLIGHT_MILLISECONDS = 1_200;
 const NEW_ROW_CLASS = 'kairos-row-new';
 
@@ -39,11 +41,11 @@ const NUMBER_HEADER = 'ag-right-aligned-header';
 
 const StatusCell = ({ data }: ICellRendererParams<Trade>) => (data ? <StatusBadge status={data.status} /> : null);
 
-function buildColumns(isNarrow: boolean): Array<ColDef<Trade>> {
+function buildColumns(isNarrow: boolean, isWide: boolean): Array<ColDef<Trade>> {
   return [
     { field: 'tradeDate', headerName: 'Date', width: 96, cellClass: 'num', valueFormatter: ({ value }: ValueFormatterParams<Trade, string>) => (value ? formatDate(value) : '') },
     { field: 'symbol', headerName: 'Instrument', width: 116, cellClass: 'num' },
-    { field: 'assetClass', headerName: 'Classe', width: 92, hide: isNarrow, valueFormatter: ({ value }: ValueFormatterParams<Trade, Trade['assetClass']>) => (value ? ASSET_CLASS_LABELS[value] : '') },
+    { field: 'assetClass', headerName: 'Classe', width: 92, hide: !isWide, valueFormatter: ({ value }: ValueFormatterParams<Trade, Trade['assetClass']>) => (value ? ASSET_CLASS_LABELS[value] : '') },
     { field: 'side', headerName: 'Sens', width: 76, valueFormatter: ({ value }: ValueFormatterParams<Trade, Trade['side']>) => (value ? SIDE_LABELS[value] : '') },
     { field: 'quantity', headerName: 'Quantité', width: 112, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, valueFormatter: ({ value }: ValueFormatterParams<Trade, number>) => formatQuantity(value) },
     { field: 'price', headerName: 'Prix', width: 92, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, hide: isNarrow, valueFormatter: ({ value, data }: ValueFormatterParams<Trade, number>) => (data ? formatPrice(value, data.assetClass) : '') },
@@ -52,7 +54,7 @@ function buildColumns(isNarrow: boolean): Array<ColDef<Trade>> {
     { field: 'trader', headerName: 'Trader', flex: 1, minWidth: 112, hide: isNarrow },
     { field: 'valueDate', headerName: 'Valeur', width: 96, cellClass: 'num', hide: isNarrow, valueFormatter: ({ value }: ValueFormatterParams<Trade, string>) => (value ? formatDate(value) : '') },
     { field: 'status', headerName: 'Statut', width: 92, cellRenderer: StatusCell },
-    { field: 'version', headerName: 'V.', width: 52, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, hide: isNarrow },
+    { field: 'version', headerName: 'V.', width: 52, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, hide: !isWide },
   ];
 }
 
@@ -95,7 +97,8 @@ export default function BlotterPage() {
   );
 
   const isNarrow = width > 0 && width < NARROW_WIDTH;
-  const columns = useMemo(() => buildColumns(isNarrow), [isNarrow]);
+  const isWide = width >= WIDE_WIDTH;
+  const columns = useMemo(() => buildColumns(isNarrow, isWide), [isNarrow, isWide]);
   const rowClassRules = useMemo(
     () => ({ [NEW_ROW_CLASS]: (params: RowClassParams<Trade>) => (params.data ? justChanged.current.has(params.data.id) : false) }),
     [],

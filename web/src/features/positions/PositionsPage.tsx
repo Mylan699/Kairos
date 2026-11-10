@@ -12,6 +12,8 @@ import { useLive, useLiveTopic } from '@/realtime/live';
 import { decompositionByBook, filterPositions, totals, type AssetClassFilter } from './positionsModel';
 
 const NARROW_WIDTH = 720;
+// Below this width the average cost steps aside, so that every P&L column stays on screen.
+const WIDE_WIDTH = 1_200;
 const COMFORTABLE_WIDTH = 1400;
 const NUMBER_CELL = 'num text-right';
 const NUMBER_HEADER = 'ag-right-aligned-header';
@@ -47,7 +49,7 @@ function CumulativePnlCell({ value }: ICellRendererParams<Position, number>) {
   return value === undefined || value === null ? null : <span className={trendClass(value)}>{formatCompactEur(value)}</span>;
 }
 
-function buildColumns(isNarrow: boolean, isComfortable: boolean): Array<ColDef<Position>> {
+function buildColumns(isNarrow: boolean, isWide: boolean, isComfortable: boolean): Array<ColDef<Position>> {
   const pnlColumn = (
     headerName: string,
     field: 'pnl.day' | 'pnl.unrealized' | 'pnl.realized' | 'pnl.priceEffect' | 'pnl.fxEffect',
@@ -65,11 +67,11 @@ function buildColumns(isNarrow: boolean, isComfortable: boolean): Array<ColDef<P
 
   return [
     { field: 'symbol', headerName: 'Instrument', width: 116, cellClass: 'num', pinned: 'left' },
-    { field: 'book', headerName: 'Book', flex: 1, minWidth: 156, hide: isNarrow },
+    { field: 'book', headerName: 'Book', flex: 1, minWidth: 144, hide: isNarrow },
     { field: 'assetClass', headerName: 'Classe', width: 84, hide: isNarrow || !isComfortable, valueFormatter: ({ value }: ValueFormatterParams<Position, Position['assetClass']>) => (value ? ASSET_CLASS_LABELS[value] : '') },
     { field: 'sector', headerName: 'Secteur', flex: 1, minWidth: 164, hide: isNarrow || !isComfortable, valueFormatter: ({ value }: ValueFormatterParams<Position, string | null>) => (value ? sectorLabel(value) : '—') },
     { field: 'quantity', headerName: 'Quantité', width: 96, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, valueFormatter: ({ value }: ValueFormatterParams<Position, number>) => formatQuantity(value) },
-    { field: 'averagePrice', headerName: 'Coût moyen', width: 108, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, hide: isNarrow, valueFormatter: ({ value, data }: ValueFormatterParams<Position, number>) => (data ? formatPrice(value, data.assetClass) : '') },
+    { field: 'averagePrice', headerName: 'Coût moyen', width: 108, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, hide: !isWide, valueFormatter: ({ value, data }: ValueFormatterParams<Position, number>) => (data ? formatPrice(value, data.assetClass) : '') },
     { field: 'markPrice', headerName: 'Cours', width: 88, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, cellRenderer: PriceCell },
     { field: 'marketValue', headerName: 'Valeur EUR', width: 96, cellClass: NUMBER_CELL, headerClass: NUMBER_HEADER, hide: isNarrow, valueFormatter: ({ value }: ValueFormatterParams<Position, number>) => formatCompactEur(value, false) },
     pnlColumn('Jour', 'pnl.day', 108),
@@ -113,8 +115,9 @@ export default function PositionsPage() {
 
   const positions = livePositions ?? query.data;
   const isNarrow = width > 0 && width < NARROW_WIDTH;
+  const isWide = width >= WIDE_WIDTH;
   const isComfortable = width >= COMFORTABLE_WIDTH;
-  const columns = useMemo(() => buildColumns(isNarrow, isComfortable), [isNarrow, isComfortable]);
+  const columns = useMemo(() => buildColumns(isNarrow, isWide, isComfortable), [isNarrow, isWide, isComfortable]);
 
   const rows = useMemo(
     () => filterPositions(positions ?? [], { bookId, assetClass, openOnly: scope === 'open' }),
