@@ -1,0 +1,27 @@
+# The build context only needs the sources: everything else stays out of the image and out of the upload.
+.git/
+.github/
+.vs/
+.vscode/
+.idea/
+.claude/
+CLAUDE.md
+data/
+docs/
+tests/
+
+**/bin/
+**/obj/
+**/TestResults/
+
+web/node_modules/
+web/dist/
+web/visual-review/
+web/test-results/
+web/playwright-report/
+web/*.tsbuildinfo
+
+.env
+.env.*
+**/*.pfx
+**/secrets.json

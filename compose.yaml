@@ -1,0 +1,41 @@
+# Local run of the whole application: docker compose up --build, then http://localhost:8000
+# The market data files are expected in ./data/raw (see README): they are read once, at the first start.
+
+name: kairos
+
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      # Local development password, never used online. It can be overridden in a .env file.
+      MSSQL_SA_PASSWORD: ${KAIROS_SQL_PASSWORD:-KairosLocal!2026}
+    volumes:
+      - sql-data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P \"$$MSSQL_SA_PASSWORD\" -Q \"SELECT 1\" -b -o /dev/null"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 20s
+
+  app:
+    build:
+      context: .
+      args:
+        SITE_URL: http://localhost:8000
+    depends_on:
+      sql:
+        condition: service_healthy
+    environment:
+      ConnectionStrings__Kairos: Server=sql;Database=Kairos;User Id=sa;Password=${KAIROS_SQL_PASSWORD:-KairosLocal!2026};TrustServerCertificate=True
+      MarketData__RawPath: /data/raw
+    volumes:
+      - ./data/raw:/data/raw:ro
+    ports:
+      - "8000:8080"
+    restart: unless-stopped
+
+volumes:
+  sql-data:

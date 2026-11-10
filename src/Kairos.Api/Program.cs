@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Kairos.Api.Errors;
+using Kairos.Api.Hosting;
 using Kairos.Api.Realtime;
 using Kairos.Api.Security;
 using Kairos.Application;
@@ -55,6 +56,7 @@ app.UseSerilogRequestLogging();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseFrontendFiles();
 app.UseRouting();
 app.UseFrontendCors();
 app.UseRateLimiter();
@@ -65,6 +67,8 @@ app.MapHub<MarketHub>("/hubs/market");
 // Liveness only says the process answers. Readiness also checks the database.
 app.MapHealthChecks("/health", new() { Predicate = _ => false });
 app.MapHealthChecks("/health/ready", new() { Predicate = check => check.Tags.Contains("ready") });
+
+app.MapFrontend();
 
 await app.RunAsync();
 
